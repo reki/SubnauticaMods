@@ -1,0 +1,11 @@
+{
+  "SeamothDepthModule4": {
+    "DisplayName": "シーモス深度モジュール MK4",
+    "Description": "シーモスの耐圧深度を 1300m に引き上げる。"
+  },
+  "SeamothDepthModule5": {
+    "DisplayName": "シーモス深度モジュール MK5",
+    "Description": "シーモスの耐圧深度を 1700m に引き上げる。"
+  }
+}
+

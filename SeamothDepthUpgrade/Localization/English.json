@@ -1,0 +1,11 @@
+{
+  "SeamothDepthModule4": {
+    "DisplayName": "Seamoth Depth Module MK4",
+    "Description": "Increases the Seamoth's crush depth to 1300m."
+  },
+  "SeamothDepthModule5": {
+    "DisplayName": "Seamoth Depth Module MK5",
+    "Description": "Increases the Seamoth's crush depth to 1700m."
+  }
+}
+

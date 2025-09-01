@@ -1,0 +1,23 @@
+{
+  "VehicleTeleporter": {
+    "DisplayName": "Vehicle Teleporter",
+    "Description": "Teleports deployed vehicles to your location. Right-click to cycle through available vehicles (Seamoth, Prawn Suit). Left-click or F key to teleport the selected vehicle to your position. Only works with undocked vehicles."
+  },
+  "VehicleTeleporterDialog": {
+    "Title": "Select Vehicle to Teleport",
+    "NoVehicles": "No vehicles found to teleport.",
+    "Cancel": "Cancel",
+    "Teleport": "Teleport"
+  },
+  "VehicleTeleporterMessages": {
+    "NoVehiclesFound": "No vehicles found to teleport",
+    "VehicleSelected": "Selected {name} as teleport target",
+    "NoVehicleSelected": "Please select a vehicle to teleport",
+    "Teleporting": "Teleporting {name}...",
+    "TeleportSuccess": "Successfully teleported {name}",
+    "TeleportFailed": "Failed to teleport vehicle",
+    "RightClickToSelect": "Right click to select vehicle",
+    "LeftClickToTeleport": "Left click to teleport"
+  }
+}
+

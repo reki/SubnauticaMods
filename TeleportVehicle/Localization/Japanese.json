@@ -1,0 +1,23 @@
+{
+  "VehicleTeleporter": {
+    "DisplayName": "乗り物テレポーター",
+    "Description": "展開された乗り物をあなたの位置にテレポートします。右クリックで利用可能な乗り物を選択（シーモス、プローンスーツ）。左クリックまたはFキーで選択した乗り物をあなたの目の前にテレポートします。ドッキングしていない乗り物のみ対象です。"
+  },
+  "VehicleTeleporterDialog": {
+    "Title": "テレポートする乗り物を選択",
+    "NoVehicles": "テレポートできる乗り物が見つかりません。",
+    "Cancel": "キャンセル",
+    "Teleport": "テレポート"
+  },
+  "VehicleTeleporterMessages": {
+    "NoVehiclesFound": "テレポートできる乗り物が見つかりません",
+    "VehicleSelected": "テレポート対象に{name}を選択しました",
+    "NoVehicleSelected": "テレポートする乗り物を選択してください",
+    "Teleporting": "{name}をテレポート中...",
+    "TeleportSuccess": "{name}のテレポートに成功しました",
+    "TeleportFailed": "乗り物のテレポートに失敗しました",
+    "RightClickToSelect": "右クリックで乗り物を選択",
+    "LeftClickToTeleport": "左クリックでテレポート"
+  }
+}
+

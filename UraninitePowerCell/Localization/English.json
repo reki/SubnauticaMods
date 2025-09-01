@@ -1,0 +1,6 @@
+{
+  "UraninitePowerCell": {
+    "DisplayName": "Uraninite Power Cell",
+    "Description": "An alternative power cell with {CapacityMultiplier} times the capacity of conventional cells."
+  }
+}
