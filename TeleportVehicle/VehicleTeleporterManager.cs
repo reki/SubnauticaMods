@@ -107,7 +107,7 @@ namespace AshFox.Subnautica
                         new VehicleInfo
                         {
                             TechType = TechType.Seamoth,
-                            Name = GetVehicleDisplayName(TechType.Seamoth),
+                            Name = GetRegisteredVehicleName(seamoth.gameObject, TechType.Seamoth),
                             IsStored = false,
                             VehicleObject = seamoth.gameObject,
                         }
@@ -124,7 +124,7 @@ namespace AshFox.Subnautica
                         new VehicleInfo
                         {
                             TechType = TechType.Exosuit,
-                            Name = GetVehicleDisplayName(TechType.Exosuit),
+                            Name = GetRegisteredVehicleName(prawnSuit.gameObject, TechType.Exosuit),
                             IsStored = false,
                             VehicleObject = prawnSuit.gameObject,
                         }
@@ -147,6 +147,132 @@ namespace AshFox.Subnautica
                 default:
                     return techType.AsString();
             }
+        }
+
+        // 可能ならプレイヤーが付けた登録名（カスタム名）を返す。無ければ型名にフォールバック。
+        private static string GetRegisteredVehicleName(GameObject vehicleObject, TechType techType)
+        {
+            if (vehicleObject == null)
+                return GetVehicleDisplayName(techType);
+
+            // 1) PingInstance 由来のカスタムラベルを反射で取得
+            try
+            {
+                var pingType = Type.GetType("PingInstance, Assembly-CSharp", false);
+                if (pingType != null)
+                {
+                    var ping = vehicleObject.GetComponent(pingType);
+                    if (ping != null)
+                    {
+                        // 候補: customLabel / label / GetCustomLabel() / GetLabel()
+                        var candidates = new (string prop, string method)[]
+                        {
+                            ("customLabel", null),
+                            ("label", null),
+                            (null, "GetCustomLabel"),
+                            (null, "GetLabel"),
+                        };
+                        foreach (var (propName, methodName) in candidates)
+                        {
+                            string val = null;
+                            if (!string.IsNullOrEmpty(propName))
+                            {
+                                var prop = pingType.GetProperty(
+                                    propName,
+                                    BindingFlags.Public
+                                        | BindingFlags.NonPublic
+                                        | BindingFlags.Instance
+                                );
+                                if (prop != null && prop.PropertyType == typeof(string))
+                                {
+                                    val = prop.GetValue(ping) as string;
+                                }
+                                if (val == null)
+                                {
+                                    var field = pingType.GetField(
+                                        propName,
+                                        BindingFlags.Public
+                                            | BindingFlags.NonPublic
+                                            | BindingFlags.Instance
+                                    );
+                                    if (field != null && field.FieldType == typeof(string))
+                                        val = field.GetValue(ping) as string;
+                                }
+
+                                if (!string.IsNullOrEmpty(val))
+                                    return val;
+                            }
+
+                            if (!string.IsNullOrEmpty(methodName))
+                            {
+                                var method = pingType.GetMethod(
+                                    methodName,
+                                    BindingFlags.Public
+                                        | BindingFlags.NonPublic
+                                        | BindingFlags.Instance,
+                                    null,
+                                    Type.EmptyTypes,
+                                    null
+                                );
+                                if (method != null && method.ReturnType == typeof(string))
+                                {
+                                    var res = method.Invoke(ping, null) as string;
+                                    if (!string.IsNullOrEmpty(res))
+                                        return res;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            // 2) SubName（Cyclops等）互換: 反射で name/GetName()
+            try
+            {
+                var subNameType = Type.GetType("SubName, Assembly-CSharp", false);
+                if (subNameType != null)
+                {
+                    var subName = vehicleObject.GetComponent(subNameType);
+                    if (subName != null)
+                    {
+                        var prop = subNameType.GetProperty(
+                            "name",
+                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+                        );
+                        if (prop != null && prop.PropertyType == typeof(string))
+                        {
+                            var val = prop.GetValue(subName) as string;
+                            if (!string.IsNullOrEmpty(val))
+                                return val;
+                        }
+                        var field = subNameType.GetField(
+                            "name",
+                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+                        );
+                        if (field != null && field.FieldType == typeof(string))
+                        {
+                            var val = field.GetValue(subName) as string;
+                            if (!string.IsNullOrEmpty(val))
+                                return val;
+                        }
+                        var method = subNameType.GetMethod(
+                            "GetName",
+                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+                        );
+                        if (method != null && method.ReturnType == typeof(string))
+                        {
+                            var val = method.Invoke(subName, null) as string;
+                            if (!string.IsNullOrEmpty(val))
+                                return val;
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            // フォールバック: 既存の型名
+            return GetVehicleDisplayName(techType);
         }
 
         private static void CreateSelectionDialog(List<VehicleInfo> vehicles)
