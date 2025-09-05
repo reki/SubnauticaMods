@@ -17,7 +17,8 @@
     "TeleportSuccess": "{name}のテレポートに成功しました",
     "TeleportFailed": "乗り物のテレポートに失敗しました",
     "RightClickToSelect": "右クリックで乗り物を選択",
-    "LeftClickToTeleport": "左クリックでテレポート"
+    "LeftClickToTeleport": "左クリックでテレポート",
+    "VehicleDockedError": "乗り物がドッキングされているのでテレポート出来ません"
   }
 }
 

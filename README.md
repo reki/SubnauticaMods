@@ -9,6 +9,7 @@ This repository contains a collection of BepInEx mods for Subnautica:
 - UraninitePowerCell: Adds a high-capacity power cell crafted from Uraninite.
 
 The shared library `Commons` provides cross-mod utilities such as localization.
+The source code for this project also includes AI-generated code.
 
 ### Requirements
 - Subnautica (PC, latest stable)
@@ -25,7 +26,7 @@ The shared library `Commons` provides cross-mod utilities such as localization.
 3) Install Subnautica (PC) and BepInEx 5.x for Subnautica for testing.
 4) Clone this repository:
 ```bash
-git clone https://github.com/<your-account>/SubnauticaMods.git
+git clone https://github.com/reki/SubnauticaMods.git
 cd SubnauticaMods
 ```
 5) Restore NuGet packages (VS will do this automatically, or run):

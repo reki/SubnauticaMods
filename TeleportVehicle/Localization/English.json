@@ -17,7 +17,8 @@
     "TeleportSuccess": "Successfully teleported {name}",
     "TeleportFailed": "Failed to teleport vehicle",
     "RightClickToSelect": "Right click to select vehicle",
-    "LeftClickToTeleport": "Left click to teleport"
+    "LeftClickToTeleport": "Left click to teleport",
+    "VehicleDockedError": "Vehicle is docked. Cannot teleport"
   }
 }
 
