@@ -71,10 +71,50 @@ namespace AshFox.Subnautica
                 );
                 return;
             }
-
             var selectedVehicle = _availableVehicles[_selectedVehicleIndex];
+            if (selectedVehicle.VehicleObject == null)
+            {
+                ShowMessage(
+                    LocalizationManager.GetLocalizedString(
+                        "VehicleTeleporterMessages.NoVehicleSelected"
+                    )
+                );
+                return;
+            }
+
+            // ドックされていないかのチェックを追加
+            if (IsVehicleDocked(selectedVehicle))
+            {
+                ShowMessage(
+                    LocalizationManager.GetLocalizedString(
+                        "VehicleTeleporterMessages.VehicleDockedError"
+                    )
+                );
+                return;
+            }
 
             TeleportVehicle(selectedVehicle);
+        }
+
+        // 車両がドックされているかチェックする
+        private static bool IsVehicleDocked(VehicleInfo vehicle)
+        {
+            if (vehicle.VehicleObject == null)
+                return false;
+
+            switch (vehicle.TechType)
+            {
+                case TechType.Seamoth:
+                    var seamoth = vehicle.VehicleObject.GetComponent<SeaMoth>();
+                    return seamoth != null && seamoth.docked;
+
+                case TechType.Exosuit:
+                    var exosuit = vehicle.VehicleObject.GetComponent<Exosuit>();
+                    return exosuit != null && exosuit.docked;
+
+                default:
+                    return false;
+            }
         }
 
         public static void ShowTeleportDialog()

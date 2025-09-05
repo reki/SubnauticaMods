@@ -30,7 +30,7 @@
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <PackageReference
       Include="Microsoft.NETFramework.ReferenceAssemblies"
-      Version="1.0.2"
+      Version="1.0.1"
       PrivateAssets="all"
     />
   </ItemGroup>
@@ -60,6 +60,9 @@
   <ItemGroup>
     <Compile Include="..\Commons\LocalizationManager.cs">
       <Link>Commons\LocalizationManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Commons\Commons.cs">
+      <Link>Commons\Commons.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

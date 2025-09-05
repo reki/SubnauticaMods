@@ -10,7 +10,15 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Subnautica.GameLibs" Version="82304.0.0-r.0" />
   </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference
+      Include="Microsoft.NETFramework.ReferenceAssemblies"
+      Version="1.0.2"
+      PrivateAssets="all"
+    />
+  </ItemGroup>
   <ItemGroup>
+    <!-- Unity/ゲーム本体 -->
     <Reference Include="Assembly-CSharp">
       <HintPath>C:\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -19,6 +27,17 @@
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>C:\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <!-- BepInEx / Harmony -->
+    <Reference Include="BepInEx">
+      <HintPath>C:\Steam\steamapps\common\Subnautica\BepInEx\core\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>C:\Steam\steamapps\common\Subnautica\BepInEx\core\0Harmony.dll</HintPath>
+    </Reference>
+    <!-- Nautilus -->
+    <Reference Include="Nautilus">
+      <HintPath>C:\Steam\steamapps\common\Subnautica\BepInEx\plugins\Nautilus\Nautilus.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

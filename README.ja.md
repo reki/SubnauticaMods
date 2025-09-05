@@ -9,6 +9,7 @@
 - UraninitePowerCell：閃ウラン鉱由来の大容量パワーセルを追加します。
 
 共通ライブラリ `Commons` はローカライズなどの共通機能を提供します。
+このプロジェクトのソースコードはAIで生成されたコードも含まれています。
 
 ### 必要環境
 - Subnautica（PC 版・安定版）
@@ -25,7 +26,7 @@
 3) Subnautica（PC 版）と BepInEx 5.x（Subnautica 用）をテスト用に導入。
 4) このリポジトリをクローン：
 ```bash
-git clone https://github.com/<your-account>/SubnauticaMods.git
+git clone https://github.com/reki/SubnauticaMods.git
 cd SubnauticaMods
 ```
 5) NuGet パッケージを復元（VS 自動、または以下）：
@@ -61,6 +62,7 @@ cd UraninitePowerCell && ./build.sh
 - 構成：各 Mod は独立した `csproj`。`Commons` にローカライズ等の共通処理があります。
 - ローカライズ：各 Mod の `Localization/English.json` と `Localization/Japanese.json` を利用します。
 - ログ：BepInEx の `Logger.Log*` を利用します。
+
 
 ### ライセンス・クレジット
 - ライセンス：`LICENSE` があればそれに従います。無い場合は作者の全権利留保とします。

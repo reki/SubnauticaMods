@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using Nautilus.Assets;
@@ -24,7 +25,7 @@ namespace AshFox.Subnautica
     {
         public const string PluginGuid = "jp.ashfox.teleportvehicle";
         public const string PluginName = "TeleportVehicle";
-        public const string PluginVersion = "1.0.0";
+        public const string PluginVersion = "1.0.1";
 
         internal static ManualLogSource Log;
         internal static TechType VehicleTeleporterTechType;
@@ -35,7 +36,7 @@ namespace AshFox.Subnautica
 
             // ローカライゼーションを初期化
             LocalizationManager.Initialize();
-
+            Commons.SetLogger(Log);
             RegisterVehicleTeleporter();
             new Harmony(PluginGuid).PatchAll();
         }
@@ -185,8 +186,6 @@ namespace AshFox.Subnautica
     {
         public override bool OnRightHandDown()
         {
-            // 右クリックで車両選択を実行
-            VehicleTeleporterManager.SelectNextVehicle();
             return false; // ドロップを防ぐ
         }
 
@@ -198,8 +197,6 @@ namespace AshFox.Subnautica
 
         public override bool OnLeftHandDown()
         {
-            // 左クリックでテレポート実行
-            VehicleTeleporterManager.TeleportSelectedVehicle();
             return false;
         }
 
@@ -211,10 +208,18 @@ namespace AshFox.Subnautica
 
         private void Update()
         {
-            // Fキーでもテレポート実行
-            if (Input.GetKeyDown(KeyCode.F))
+            if (
+                (
+                    GameInput.GetButtonDown(GameInput.Button.AltTool)
+                    || GameInput.GetButtonDown(GameInput.Button.LeftHand)
+                ) && !Commons.IsSystemUiOpen()
+            )
             {
                 VehicleTeleporterManager.TeleportSelectedVehicle();
+            }
+            if (GameInput.GetButtonDown(GameInput.Button.RightHand) && !Commons.IsSystemUiOpen())
+            {
+                VehicleTeleporterManager.SelectNextVehicle();
             }
         }
     }
