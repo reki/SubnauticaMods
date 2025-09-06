@@ -1,0 +1,17 @@
+{
+  "VehicleSpeedUpgrade": {
+    "1": {
+      "Name": "Vehicle Speed Upgrade MK1",
+      "Description": "Increases vehicle movement speed by 1.5x. Multiple modules can be equipped."
+    },
+    "2": {
+      "Name": "Vehicle Speed Upgrade MK2",
+      "Description": "Increases vehicle movement speed by 2.0x. Multiple modules can be equipped."
+    },
+    "3": {
+      "Name": "Vehicle Speed Upgrade MK3", 
+      "Description": "Increases vehicle movement speed by 2.5x. Multiple modules can be equipped."
+    }
+  }
+}
+
