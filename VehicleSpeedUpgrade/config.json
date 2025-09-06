@@ -1,0 +1,69 @@
+{
+    "WriteDebugLog": false,
+    "Multiplier":{
+        "Seamoth": {
+            "MK1": {
+                "ForwardForce": 2.0,
+                "BackwardForce": 2.0,
+                "SidewardForce": 2.0,
+                "VerticalForce": 2.0
+            },
+            "MK2": {
+                "ForwardForce": 2.5,
+                "BackwardForce": 2.5,
+                "SidewardForce": 2.5,
+                "VerticalForce": 2.5
+            }
+        },
+        "Exosuit": {
+            "MK1": {
+                "ForwardForce": 2.5,
+                "BackwardForce": 2.5,
+                "SidewardForce": 2.5,
+                "VerticalForce": 2.5
+            },
+            "MK2": {
+                "ForwardForce": 3.0,
+                "BackwardForce": 3.0,
+                "SidewardForce": 3.0,
+                "VerticalForce": 3.0
+            }
+        },
+        "Cyclops": {
+            "MK1": {
+                "Slow": {
+                    "ForwardAccel": 2.0,
+                    "VerticalAccel": 2.0,
+                    "TurningTorque": 2.0
+                },
+                "Standard": {
+                    "ForwardAccel": 2.5,
+                    "VerticalAccel": 2.5,
+                    "TurningTorque": 2.5
+                },
+                "Fast": {
+                    "ForwardAccel": 2.5,
+                    "VerticalAccel": 2.5,
+                    "TurningTorque": 2.5
+                }
+            },
+            "MK2": {
+                "Slow": {
+                    "ForwardAccel": 3.0,
+                    "VerticalAccel": 3.0,
+                    "TurningTorque": 3.0
+                },
+                "Standard": {
+                    "ForwardAccel": 4.5,
+                    "VerticalAccel": 4.5,
+                    "TurningTorque": 4.5
+                },
+                "Fast": {
+                    "ForwardAccel": 5.0,
+                    "VerticalAccel": 5.0,
+                    "TurningTorque": 5.0
+                }
+            }
+        }
+    }
+}

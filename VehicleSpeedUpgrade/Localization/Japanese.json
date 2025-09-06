@@ -1,0 +1,22 @@
+{
+  "VehicleSpeedUpgrade": {
+    "MK1": {
+      "Name": "乗り物速度アップグレード MK1",
+      "Description": "SeaMothとPRAWN SUITの移動速度を増加させます。"
+    },
+    "MK2": {
+      "Name": "乗り物速度アップグレード MK2",
+      "Description": "SeaMothとPRAWN SUITの移動速度をさらに向上させます。"
+    }
+  },
+  "CyclopsSpeedUpgrade": {
+    "MK1": {
+      "Name": "Cyclops速度強化モジュール MK1",
+      "Description": "Cyclopsの移動速度を増加させます。"
+    },
+    "MK2": {
+      "Name": "Cyclops速度強化モジュール MK2",
+      "Description": "Cyclopsの移動速度をさらに増加させます。"
+    }
+  }
+}
