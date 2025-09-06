@@ -2,5 +2,9 @@
   "UraninitePowerCell": {
     "DisplayName": "Uraninite Power Cell",
     "Description": "An alternative power cell with {CapacityMultiplier} times the capacity of conventional cells."
+  },
+  "UraniniteBattery": {
+    "DisplayName": "Uraninite Battery",
+    "Description": "An alternative battery with {CapacityMultiplier} times the capacity of conventional batteries."
   }
 }

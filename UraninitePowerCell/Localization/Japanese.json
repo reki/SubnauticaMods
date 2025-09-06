@@ -2,5 +2,9 @@
   "UraninitePowerCell": {
     "DisplayName": "原子パワーセル",
     "Description": "従来型の{CapacityMultiplier}倍の容量を持つ代替パワーセル。"
+  },
+  "UraniniteBattery": {
+    "DisplayName": "原子バッテリー",
+    "Description": "従来型の{CapacityMultiplier}倍の容量を持つ代替バッテリー。"
   }
 }

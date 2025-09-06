@@ -24,11 +24,11 @@ namespace AshFox.Subnautica
 
         internal static ManualLogSource Log;
         internal static TechType UraniniteCellTechType;
+        internal static TechType UraniniteBatteryTechType;
 
-        // バニラ Power Cell は 200、イオンは 1000。核燃料棒は閃ウラン鉱２つで20000。なので50倍にして10,000にしたい（参照: Subnautica Wiki）
-        private const float BasePowerCellCapacity = 200f;
-        private const float CapacityMultiplier = 50f;
-        internal static float TargetCapacity => BasePowerCellCapacity * CapacityMultiplier; // = 100000
+        internal const float UraninitePowerCapacity = 10000f;
+        internal const float BasePowerCellCapacity = 200f;
+        internal const float BaseBatteryCapacity = 100f;
 
         private void Awake()
         {
@@ -37,11 +37,17 @@ namespace AshFox.Subnautica
             // ローカライゼーションを初期化
             LocalizationManager.Initialize();
 
-            RegisterItem();
+            RegisterItems();
             new Harmony(PluginGuid).PatchAll(); // 互換性パッチ（EnergyMixin / 充電器）
         }
 
-        private static void RegisterItem()
+        private static void RegisterItems()
+        {
+            RegisterPowerCell();
+            RegisterBattery();
+        }
+
+        private static void RegisterPowerCell()
         {
             var info = PrefabInfo.WithTechType(
                 classId: "UraninitePowerCell",
@@ -52,7 +58,10 @@ namespace AshFox.Subnautica
                     "UraninitePowerCell.Description",
                     new Dictionary<string, string>
                     {
-                        { "CapacityMultiplier", CapacityMultiplier.ToString() },
+                        {
+                            "CapacityMultiplier",
+                            (UraninitePowerCapacity / BasePowerCellCapacity).ToString()
+                        },
                     }
                 )
             );
@@ -111,6 +120,77 @@ namespace AshFox.Subnautica
             // パワーセル充電器での互換性を設定（重要！）
             CraftDataHandler.SetEquipmentType(info.TechType, EquipmentType.PowerCellCharger);
         }
+
+        private static void RegisterBattery()
+        {
+            var info = PrefabInfo.WithTechType(
+                classId: "UraniniteBattery",
+                displayName: LocalizationManager.GetLocalizedString("UraniniteBattery.DisplayName"),
+                description: LocalizationManager.GetLocalizedString(
+                    "UraniniteBattery.Description",
+                    new Dictionary<string, string>
+                    {
+                        {
+                            "CapacityMultiplier",
+                            (UraninitePowerCapacity / BaseBatteryCapacity).ToString()
+                        },
+                    }
+                )
+            );
+
+            var prefab = new CustomPrefab(info);
+
+            // Battery をクローン
+            var clone = new CloneTemplate(info, TechType.Battery);
+            prefab.SetGameObject(clone);
+
+            // レシピ：Battery + 閃ウラン鉱 + リチウム + シリコンゴム
+            var recipe = new RecipeData
+            {
+                craftAmount = 1,
+                Ingredients = new List<Ingredient>
+                {
+                    new Ingredient(TechType.Battery, 2),
+                    new Ingredient(TechType.UraniniteCrystal, 1),
+                    new Ingredient(TechType.Lithium, 1),
+                    new Ingredient(TechType.Silicone, 1),
+                },
+            };
+            prefab.SetRecipe(recipe);
+
+            // PDAグループ/カテゴリを設定（設計図タブに表示するため）
+            CraftDataHandler.AddToGroup(
+                TechGroup.Resources,
+                TechCategory.Electronics,
+                info.TechType
+            );
+
+            // 設計図を起動時アンロック（改造ステーションに表示するため）
+            KnownTechHandler.UnlockOnStart(info.TechType);
+            // 設計図表示：UraniniteCrystalをスキャンしてアンロック
+            KnownTechHandler.SetAnalysisTechEntry(
+                TechType.UraniniteCrystal,
+                new TechType[] { info.TechType }
+            );
+            var batteryIcon = SpriteManager.Get(TechType.Battery);
+            if (batteryIcon != null)
+                SpriteHandler.RegisterSprite(info.TechType, batteryIcon);
+
+            // 登録
+            prefab.Register();
+            UraniniteBatteryTechType = info.TechType;
+
+            // 表示タブ（基本素材 → 電子部品）のみに配置
+            CraftTreeHandler.AddCraftingNode(
+                CraftTree.Type.Fabricator,
+                info.TechType,
+                "Resources",
+                "Electronics"
+            );
+
+            // バッテリー充電器での互換性を設定（重要！）
+            CraftDataHandler.SetEquipmentType(info.TechType, EquipmentType.BatteryCharger);
+        }
     }
 
     // ====== 容量設定パッチ ======
@@ -123,15 +203,26 @@ namespace AshFox.Subnautica
         {
             if (__instance == null)
                 return;
-            if (__instance.GetTechType() != Plugin.UraniniteCellTechType)
+            if (
+                __instance.GetTechType() != Plugin.UraniniteCellTechType
+                && __instance.GetTechType() != Plugin.UraniniteBatteryTechType
+            )
                 return;
 
             var battery = __instance.GetComponent<Battery>();
             if (battery == null)
                 return;
 
-            battery._capacity = Plugin.TargetCapacity;
-            battery._charge = Plugin.TargetCapacity; // フル充電状態で開始
+            if (__instance.GetTechType() == Plugin.UraniniteCellTechType)
+            {
+                battery._capacity = Plugin.UraninitePowerCapacity;
+                battery._charge = Plugin.UraninitePowerCapacity; // フル充電状態で開始
+            }
+            else if (__instance.GetTechType() == Plugin.UraniniteBatteryTechType)
+            {
+                battery._capacity = Plugin.UraninitePowerCapacity;
+                battery._charge = Plugin.UraninitePowerCapacity; // フル充電状態で開始
+            }
 
             // 充電可能フラグを明示（存在する場合）
             var fRechargeable =
@@ -181,6 +272,13 @@ namespace AshFox.Subnautica
                     {
                         list.Add(Plugin.UraniniteCellTechType);
                     }
+                    if (
+                        list.Contains(TechType.Battery)
+                        && !list.Contains(Plugin.UraniniteBatteryTechType)
+                    )
+                    {
+                        list.Add(Plugin.UraniniteBatteryTechType);
+                    }
                     continue; // returnではなくcontinue
                 }
                 if (val is TechType[] arr)
@@ -195,6 +293,10 @@ namespace AshFox.Subnautica
                     {
                         f.SetValue(__instance, set.ToArray());
                     }
+                    if (set.Contains(TechType.Battery) && set.Add(Plugin.UraniniteBatteryTechType))
+                    {
+                        f.SetValue(__instance, set.ToArray());
+                    }
                     continue; // returnではなくcontinue
                 }
             }
@@ -204,8 +306,6 @@ namespace AshFox.Subnautica
     // 共通Util
     internal static class ChargerCompatUtil
     {
-        private static object _originalIsAllowedToAdd = null;
-
         internal static void TryAllow(Charger charger, TechType tt)
         {
             if (charger == null)
@@ -260,8 +360,7 @@ namespace AshFox.Subnautica
                                         customMethod
                                     );
 
-                                    // 元のデリゲートを保存
-                                    _originalIsAllowedToAdd = originalDelegate;
+                                    // 元のデリゲートは保存しない（デフォルト動作のみを使用）
 
                                     // カスタムデリゲートを設定
                                     isAllowedToAddField.SetValue(equipment, customDelegate);
@@ -301,7 +400,8 @@ namespace AshFox.Subnautica
                 seq = list;
             else if (val is TechType[] arr)
                 seq = arr;
-            if (seq == null){
+            if (seq == null)
+            {
                 Plugin.Log.LogWarning("Charger allowedTech* type unexpected: " + val?.GetType());
             }
         }
@@ -319,31 +419,16 @@ namespace AshFox.Subnautica
                     return true;
                 }
 
-                // 元のデリゲートがある場合は呼び出し
-                if (_originalIsAllowedToAdd != null)
+                // UraniniteBattery の場合は許可
+                if (techType == Plugin.UraniniteBatteryTechType)
                 {
-                    try
-                    {
-                        var method = _originalIsAllowedToAdd.GetType().GetMethod("Invoke");
-                        if (method != null)
-                        {
-                            var result = method.Invoke(
-                                _originalIsAllowedToAdd,
-                                new object[] { pickupable, verbose }
-                            );
-                            return (bool)result;
-                        }
-                    }
-                    catch (System.Exception ex)
-                    {
-                        Plugin.Log.LogWarning(
-                            $"Error calling original isAllowedToAdd: {ex.Message}"
-                        );
-                    }
+                    return true;
                 }
 
-                // デフォルト: PowerCell系を許可
-                return techType == TechType.PowerCell || techType == TechType.PrecursorIonPowerCell;
+                // デフォルト: PowerCell系とBattery系を許可
+                return techType == TechType.PowerCell
+                    || techType == TechType.PrecursorIonPowerCell
+                    || techType == TechType.Battery;
             }
             return false;
         }
@@ -390,6 +475,35 @@ namespace AshFox.Subnautica
         }
     }
 
+    // BatteryCharger への互換追加（定期的に全充電器をスキャンして追加）
+    internal static class BatteryChargerCompatibility
+    {
+        private static HashSet<int> patchedChargers = new HashSet<int>();
+
+        // ゲーム開始後に定期的に実行
+        internal static void EnsureCompatibility()
+        {
+            var chargers = UnityEngine.Object.FindObjectsOfType<BatteryCharger>();
+            if (chargers.Length > 0)
+            {
+                int newChargers = 0;
+                foreach (var charger in chargers)
+                {
+                    int chargerId = charger.GetInstanceID();
+                    if (!patchedChargers.Contains(chargerId))
+                    {
+                        ChargerCompatUtil.TryAllow(charger, Plugin.UraniniteBatteryTechType);
+                        charger.StartCoroutine(
+                            ChargerCompatUtil.LateAllow(charger, Plugin.UraniniteBatteryTechType)
+                        );
+                        patchedChargers.Add(chargerId);
+                        newChargers++;
+                    }
+                }
+            }
+        }
+    }
+
     // ゲームのメインループで定期的にチェック
     [HarmonyPatch(typeof(Player), "Update")]
     internal static class Player_Update_Patch
@@ -403,6 +517,7 @@ namespace AshFox.Subnautica
             if (frameCounter++ % 300 == 0)
             {
                 PowerCellChargerCompatibility.EnsureCompatibility();
+                BatteryChargerCompatibility.EnsureCompatibility();
             }
         }
     }
