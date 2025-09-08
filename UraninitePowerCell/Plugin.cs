@@ -78,8 +78,8 @@ namespace AshFox.Subnautica
                 craftAmount = 1,
                 Ingredients = new List<Ingredient>
                 {
-                    new Ingredient(TechType.PowerCell, 2),
-                    new Ingredient(TechType.UraniniteCrystal, 1),
+                    new Ingredient(TechType.PowerCell, 1),
+                    new Ingredient(TechType.UraniniteCrystal, 2),
                     new Ingredient(TechType.Lithium, 1),
                     new Ingredient(TechType.Silicone, 1),
                 },
@@ -150,8 +150,8 @@ namespace AshFox.Subnautica
                 craftAmount = 1,
                 Ingredients = new List<Ingredient>
                 {
-                    new Ingredient(TechType.Battery, 2),
-                    new Ingredient(TechType.UraniniteCrystal, 1),
+                    new Ingredient(TechType.Battery, 1),
+                    new Ingredient(TechType.UraniniteCrystal, 2),
                     new Ingredient(TechType.Lithium, 1),
                     new Ingredient(TechType.Silicone, 1),
                 },
