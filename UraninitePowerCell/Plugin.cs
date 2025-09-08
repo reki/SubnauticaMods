@@ -322,6 +322,101 @@ namespace AshFox.Subnautica
                     continue; // returnではなくcontinue
                 }
             }
+
+            // 可視モデルのマッピングにUraninitePowerCellを追加（PowerCellの見た目を流用）
+            EnergyMixinVisualUtil.TryAliasVisualModel(__instance, TechType.PowerCell, Plugin.UraniniteCellTechType);
+        }
+    }
+
+    // EnergyMixin の可視モデル配列/リストへ TechType の見た目をエイリアスする
+    internal static class EnergyMixinVisualUtil
+    {
+        internal static void TryAliasVisualModel(EnergyMixin mixin, TechType from, TechType to)
+        {
+            if (mixin == null)
+                return;
+
+            // EnergyMixin 内の全フィールドを走査し、要素が techType と model を持つ配列/リストを探す
+            var allFields = AccessTools.GetDeclaredFields(mixin.GetType());
+            foreach (var f in allFields)
+            {
+                var val = f.GetValue(mixin);
+                if (val == null)
+                    continue;
+
+                System.Type enumerableType = null;
+                System.Collections.IList asList = null;
+                bool isArray = false;
+
+                if (val is System.Array arr)
+                {
+                    enumerableType = f.FieldType.GetElementType();
+                    asList = new System.Collections.ArrayList(arr);
+                    isArray = true;
+                }
+                else if (val is System.Collections.IList list)
+                {
+                    // List<T> など
+                    var gargs = f.FieldType.IsGenericType ? f.FieldType.GetGenericArguments() : null;
+                    enumerableType = gargs != null && gargs.Length == 1 ? gargs[0] : null;
+                    asList = list;
+                }
+                else
+                {
+                    continue;
+                }
+
+                if (enumerableType == null)
+                    continue;
+
+                // 要素が techType と model を持つ型か判定
+                var techField = AccessTools.Field(enumerableType, "techType")
+                    ?? AccessTools.Field(enumerableType, "techTypeId")
+                    ?? AccessTools.Field(enumerableType, "batteryType");
+                var modelField = AccessTools.Field(enumerableType, "model")
+                    ?? AccessTools.Field(enumerableType, "prefab")
+                    ?? AccessTools.Field(enumerableType, "gameObject");
+                if (techField == null || modelField == null)
+                    continue;
+
+                // from のモデルを取得
+                object fromModelObj = null;
+                bool hasToEntry = false;
+                foreach (var item in asList)
+                {
+                    if (item == null) continue;
+                    var tt = (TechType)techField.GetValue(item);
+                    if (tt == to)
+                    {
+                        hasToEntry = true;
+                    }
+                    if (tt == from && fromModelObj == null)
+                    {
+                        fromModelObj = modelField.GetValue(item);
+                    }
+                }
+
+                if (fromModelObj == null || hasToEntry)
+                    continue;
+
+                // 新規要素を作成して to を追加
+                var newElem = System.Activator.CreateInstance(enumerableType);
+                techField.SetValue(newElem, to);
+                modelField.SetValue(newElem, fromModelObj);
+
+                if (isArray)
+                {
+                    var arrList = (System.Collections.ArrayList)asList;
+                    arrList.Add(newElem);
+                    var newArray = System.Array.CreateInstance(enumerableType, arrList.Count);
+                    arrList.CopyTo(newArray);
+                    f.SetValue(mixin, newArray);
+                }
+                else
+                {
+                    asList.Add(newElem);
+                }
+            }
         }
     }
 
