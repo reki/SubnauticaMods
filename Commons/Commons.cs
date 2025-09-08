@@ -52,9 +52,8 @@ namespace AshFox.Subnautica
             {
                 Log?.LogError($"Failed to load custom icon: {ex.Message}");
             }
-
             // フォールバック: 既存のアイコンを使用
-            return SpriteManager.Get(TechType.VehicleHullModule1);
+            return null;
         }
     }
 }

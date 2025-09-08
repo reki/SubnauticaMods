@@ -36,6 +36,7 @@ namespace AshFox.Subnautica
 
             // ローカライゼーションを初期化
             LocalizationManager.Initialize();
+            Commons.SetLogger(Log);
 
             RegisterItems();
             new Harmony(PluginGuid).PatchAll(); // 互換性パッチ（EnergyMixin / 充電器）
@@ -72,6 +73,20 @@ namespace AshFox.Subnautica
             var clone = new CloneTemplate(info, TechType.PowerCell);
             prefab.SetGameObject(clone);
 
+            // カスタムアイコンを設定
+            var customIcon = Commons.LoadCustomIcon("uraninite_power_cell.png");
+            if (customIcon != null)
+            {
+                Log.LogWarning("Custom icon loaded: " + customIcon.name);
+                SpriteHandler.RegisterSprite(info.TechType, customIcon);
+            }
+            else
+            {
+                Log.LogWarning("Custom icon not loaded");
+                var pcIcon = SpriteManager.Get(TechType.PowerCell);
+                SpriteHandler.RegisterSprite(info.TechType, pcIcon);
+            }
+
             // レシピ：PowerCell + 閃ウラン鉱 + リチウム + シリコンゴム
             var recipe = new RecipeData
             {
@@ -101,9 +116,6 @@ namespace AshFox.Subnautica
                 TechType.UraniniteCrystal,
                 new TechType[] { info.TechType }
             );
-            var pcIcon = SpriteManager.Get(TechType.PowerCell);
-            if (pcIcon != null)
-                SpriteHandler.RegisterSprite(info.TechType, pcIcon);
 
             // 登録
             prefab.Register();
@@ -144,6 +156,20 @@ namespace AshFox.Subnautica
             var clone = new CloneTemplate(info, TechType.Battery);
             prefab.SetGameObject(clone);
 
+            // カスタムアイコンを設定
+            var customIcon = Commons.LoadCustomIcon("uranitite_battery.png");
+            if (customIcon != null)
+            {
+                Log.LogWarning("Custom icon loaded: " + customIcon.name);
+                SpriteHandler.RegisterSprite(info.TechType, customIcon);
+            }
+            else
+            {
+                Log.LogWarning("Custom icon not loaded");
+                var batteryIcon = SpriteManager.Get(TechType.Battery);
+                SpriteHandler.RegisterSprite(info.TechType, batteryIcon);
+            }
+
             // レシピ：Battery + 閃ウラン鉱 + リチウム + シリコンゴム
             var recipe = new RecipeData
             {
@@ -172,10 +198,6 @@ namespace AshFox.Subnautica
                 TechType.UraniniteCrystal,
                 new TechType[] { info.TechType }
             );
-            var batteryIcon = SpriteManager.Get(TechType.Battery);
-            if (batteryIcon != null)
-                SpriteHandler.RegisterSprite(info.TechType, batteryIcon);
-
             // 登録
             prefab.Register();
             UraniniteBatteryTechType = info.TechType;

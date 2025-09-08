@@ -26,6 +26,9 @@
     <Content Include="Localization\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <PackageReference
@@ -60,6 +63,9 @@
   <ItemGroup>
     <Compile Include="..\Commons\LocalizationManager.cs">
       <Link>Commons\LocalizationManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Commons\Commons.cs">
+      <Link>Commons\Commons.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>
