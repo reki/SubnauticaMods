@@ -324,7 +324,11 @@ namespace AshFox.Subnautica
             }
 
             // 可視モデルのマッピングにUraninitePowerCellを追加（PowerCellの見た目を流用）
-            EnergyMixinVisualUtil.TryAliasVisualModel(__instance, TechType.PowerCell, Plugin.UraniniteCellTechType);
+            EnergyMixinVisualUtil.TryAliasVisualModel(
+                __instance,
+                TechType.PowerCell,
+                Plugin.UraniniteCellTechType
+            );
         }
     }
 
@@ -357,7 +361,9 @@ namespace AshFox.Subnautica
                 else if (val is System.Collections.IList list)
                 {
                     // List<T> など
-                    var gargs = f.FieldType.IsGenericType ? f.FieldType.GetGenericArguments() : null;
+                    var gargs = f.FieldType.IsGenericType
+                        ? f.FieldType.GetGenericArguments()
+                        : null;
                     enumerableType = gargs != null && gargs.Length == 1 ? gargs[0] : null;
                     asList = list;
                 }
@@ -370,10 +376,12 @@ namespace AshFox.Subnautica
                     continue;
 
                 // 要素が techType と model を持つ型か判定
-                var techField = AccessTools.Field(enumerableType, "techType")
+                var techField =
+                    AccessTools.Field(enumerableType, "techType")
                     ?? AccessTools.Field(enumerableType, "techTypeId")
                     ?? AccessTools.Field(enumerableType, "batteryType");
-                var modelField = AccessTools.Field(enumerableType, "model")
+                var modelField =
+                    AccessTools.Field(enumerableType, "model")
                     ?? AccessTools.Field(enumerableType, "prefab")
                     ?? AccessTools.Field(enumerableType, "gameObject");
                 if (techField == null || modelField == null)
@@ -384,7 +392,8 @@ namespace AshFox.Subnautica
                 bool hasToEntry = false;
                 foreach (var item in asList)
                 {
-                    if (item == null) continue;
+                    if (item == null)
+                        continue;
                     var tt = (TechType)techField.GetValue(item);
                     if (tt == to)
                     {
@@ -636,6 +645,108 @@ namespace AshFox.Subnautica
                 PowerCellChargerCompatibility.EnsureCompatibility();
                 BatteryChargerCompatibility.EnsureCompatibility();
             }
+        }
+    }
+
+    // Trashcanクラスの廃棄処理を制御するパッチ
+    [HarmonyPatch(typeof(Trashcan), "IsAllowedToAdd")]
+    internal static class Trashcan_IsAllowedToAdd_Patch
+    {
+        private static readonly HashSet<int> processedTrashcans = new HashSet<int>();
+
+        [HarmonyPostfix]
+        private static void Postfix(Trashcan __instance, Pickupable pickupable, bool verbose, ref bool __result)
+        {
+            if (pickupable == null) return;
+
+            var techType = pickupable.GetTechType();
+            if (techType != Plugin.UraniniteCellTechType && techType != Plugin.UraniniteBatteryTechType)
+                return;
+
+            var instanceId = __instance.GetInstanceID();
+            var trashcanName = __instance.gameObject.name;
+            
+            Plugin.Log.LogInfo($"UraninitePowerCell disposal attempt in Trashcan: {trashcanName} (ID: {instanceId})");
+            
+            // ILSpyの結果を参考に、nuclearWasteリストをチェック
+            var nuclearWasteField = AccessTools.Field(typeof(Trashcan), "nuclearWaste");
+            if (nuclearWasteField != null)
+            {
+                var nuclearWasteList = nuclearWasteField.GetValue(__instance) as List<TechType>;
+                if (nuclearWasteList != null)
+                {
+                    Plugin.Log.LogInfo($"Found nuclearWaste list with {nuclearWasteList.Count} items in {trashcanName}");
+                    
+                    // 放射性廃棄物処理装置かどうかを判定
+                    bool isNuclearWasteDisposal = IsNuclearWasteDisposal(__instance, nuclearWasteList);
+                    Plugin.Log.LogInfo($"IsNuclearWasteDisposal result for {trashcanName}: {isNuclearWasteDisposal}");
+                    
+                    if (isNuclearWasteDisposal)
+                    {
+                        // 放射性廃棄物処理装置の場合のみUraninitePowerCellを追加
+                        if (!processedTrashcans.Contains(instanceId))
+                        {
+                            if (!nuclearWasteList.Contains(Plugin.UraniniteCellTechType))
+                            {
+                                nuclearWasteList.Add(Plugin.UraniniteCellTechType);
+                                Plugin.Log.LogInfo($"Added UraninitePowerCell to nuclear waste disposal");
+                            }
+                            if (!nuclearWasteList.Contains(Plugin.UraniniteBatteryTechType))
+                            {
+                                nuclearWasteList.Add(Plugin.UraniniteBatteryTechType);
+                                Plugin.Log.LogInfo($"Added UraniniteBattery to nuclear waste disposal");
+                            }
+                            processedTrashcans.Add(instanceId);
+                        }
+                        
+                        // 放射性廃棄物処理装置では廃棄を許可
+                        __result = true;
+                        Plugin.Log.LogInfo($"UraninitePowerCell disposal allowed in nuclear waste disposal");
+                        return;
+                    }
+                    else
+                    {
+                        // 通常のゴミ箱では廃棄を禁止
+                        __result = false;
+                        Plugin.Log.LogInfo($"UraninitePowerCell disposal blocked in regular trashcan");
+                        return;
+                    }
+                }
+            }
+            
+            // デフォルトの動作を維持
+            Plugin.Log.LogInfo($"UraninitePowerCell disposal result: {__result}");
+        }
+        
+        private static bool IsNuclearWasteDisposal(Trashcan trashcan, List<TechType> nuclearWasteList)
+        {
+            var name = trashcan.gameObject.name;
+            Plugin.Log.LogInfo($"Checking Trashcan name: {name}");
+            
+            // RamunesCustomizedStorageのログパターンを参考に判定
+            // NuclearWaste: storageRoot (小文字s) - 放射性廃棄物処理装置
+            // TrashCan: StorageRoot (大文字S) - 通常のゴミ箱
+            
+            // LabTrashcan は放射性廃棄物処理装置
+            if (name.Contains("LabTrashcan"))
+            {
+                Plugin.Log.LogInfo($"Detected nuclear waste disposal: LabTrashcan");
+                return true;
+            }
+            
+            // Trashcans は通常のゴミ箱
+            if (name.Contains("Trashcans"))
+            {
+                Plugin.Log.LogInfo($"Detected regular trashcan: Trashcans");
+                return false;
+            }
+            
+            // フォールバック：名前ベースの判定
+            var lowerName = name.ToLower();
+            bool isNuclear = lowerName.Contains("nuclear") || lowerName.Contains("waste") || lowerName.Contains("lab");
+            Plugin.Log.LogInfo($"Fallback name-based detection for {name}: {isNuclear}");
+            
+            return isNuclear;
         }
     }
 }
