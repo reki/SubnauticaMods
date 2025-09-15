@@ -305,19 +305,35 @@ namespace AshFox.Subnautica
                 var modelsList = new List<EnergyMixin.BatteryModels>(__instance.batteryModels);
                 bool modelsUpdated = false;
 
+                // デバッグ: 既存のモデルを確認
+                Plugin.Log.LogInfo($"Existing battery models for {__instance.gameObject.name}:");
+                for (int i = 0; i < __instance.batteryModels.Length; i++)
+                {
+                    Plugin.Log.LogInfo(
+                        $"  Model {i}: {__instance.batteryModels[i].techType} -> {(__instance.batteryModels[i].model != null ? __instance.batteryModels[i].model.name : "null")}"
+                    );
+                }
+
                 // PowerCellモデルを探す
                 GameObject powerCellModel = null;
                 GameObject batteryModel = null;
 
                 foreach (var model in __instance.batteryModels)
                 {
+                    Plugin.Log.LogInfo($"Checking model: {model.techType}");
                     if (model.techType == TechType.PowerCell)
                     {
                         powerCellModel = model.model;
+                        Plugin.Log.LogInfo(
+                            $"Found PowerCell model: {(powerCellModel != null ? powerCellModel.name : "null")}"
+                        );
                     }
                     else if (model.techType == TechType.Battery)
                     {
                         batteryModel = model.model;
+                        Plugin.Log.LogInfo(
+                            $"Found Battery model: {(batteryModel != null ? batteryModel.name : "null")}"
+                        );
                     }
                 }
 
@@ -339,6 +355,12 @@ namespace AshFox.Subnautica
                         $"Added UraninitePowerCell model for {__instance.gameObject.name}"
                     );
                 }
+                else if (powerCellModel == null)
+                {
+                    Plugin.Log.LogWarning(
+                        $"PowerCell model not found for {__instance.gameObject.name}"
+                    );
+                }
 
                 // UraniniteBatteryのモデルを追加（Batteryモデルを流用）
                 if (
@@ -358,52 +380,84 @@ namespace AshFox.Subnautica
                         $"Added UraniniteBattery model for {__instance.gameObject.name}"
                     );
                 }
+                else if (batteryModel == null)
+                {
+                    Plugin.Log.LogWarning(
+                        $"Battery model not found for {__instance.gameObject.name}"
+                    );
+                }
 
                 if (modelsUpdated)
                 {
                     __instance.batteryModels = modelsList.ToArray();
+                    Plugin.Log.LogInfo(
+                        $"Updated batteryModels array for {__instance.gameObject.name}, new length: {__instance.batteryModels.Length}"
+                    );
                 }
+            }
+            else
+            {
+                Plugin.Log.LogWarning($"No batteryModels found for {__instance.gameObject.name}");
             }
         }
     }
 
-    // バッテリー装備時の表示を制御するパッチ（CustomBatteriesを参考）
+    // バッテリー装備時の表示を制御するパッチ（Prefixで元のロジックを妨害しない）
     [HarmonyPatch(typeof(EnergyMixin), "NotifyHasBattery")]
     internal static class EnergyMixin_NotifyHasBattery_Patch
     {
-        [HarmonyPostfix]
-        private static void Postfix(EnergyMixin __instance, InventoryItem item)
+        [HarmonyPrefix]
+        private static bool Prefix(EnergyMixin __instance, InventoryItem item)
         {
             if (item?.item == null)
-                return;
+                return true; // 元のメソッドを実行
 
             var techType = item.item.GetTechType();
-            if (
-                techType != Plugin.UraniniteCellTechType
-                && techType != Plugin.UraniniteBatteryTechType
-            )
-                return;
+
+            // PowerCell、Battery、UraninitePowerCell、UraniniteBatteryを処理
+            bool isHandledBattery = (
+                techType == TechType.PowerCell
+                || techType == TechType.Battery
+                || techType == Plugin.UraniniteCellTechType
+                || techType == Plugin.UraniniteBatteryTechType
+            );
+
+            if (!isHandledBattery)
+                return true; // その他のバッテリーは元のメソッドに任せる
 
             Plugin.Log.LogInfo(
                 $"NotifyHasBattery called for {techType} on {__instance.gameObject.name}"
             );
 
             if (__instance.batteryModels == null || __instance.batteryModels.Length == 0)
-                return;
-
-            // 対応するモデルを探して表示
-            int modelToDisplay = 0; // デフォルトは最初のモデル
-            for (int b = 0; b < __instance.batteryModels.Length; b++)
             {
-                if (__instance.batteryModels[b].techType == techType)
+                Plugin.Log.LogInfo($"No batteryModels found for {__instance.gameObject.name}");
+                return true; // 元のメソッドを実行
+            }
+
+            // 手動で正しいモデルを表示
+            for (int i = 0; i < __instance.batteryModels.Length; i++)
+            {
+                var model = __instance.batteryModels[i];
+                if (model.techType == techType && model.model != null)
                 {
-                    modelToDisplay = b;
-                    break;
+                    // 全てのモデルを非表示にしてから、正しいモデルを表示
+                    for (int j = 0; j < __instance.batteryModels.Length; j++)
+                    {
+                        if (__instance.batteryModels[j].model != null)
+                        {
+                            __instance.batteryModels[j].model.SetActive(false);
+                        }
+                    }
+
+                    model.model.SetActive(true);
+                    Plugin.Log.LogInfo($"Displaying battery model {i} for {techType}");
+                    return false; // 元のメソッドを実行しない
                 }
             }
 
-            Plugin.Log.LogInfo($"Displaying battery model {modelToDisplay} for {techType}");
-            __instance.batteryModels[modelToDisplay].model.SetActive(true);
+            Plugin.Log.LogWarning($"Model not found for {techType}");
+            return true; // モデルが見つからない場合は元のメソッドを実行
         }
     }
 
