@@ -260,75 +260,150 @@ namespace AshFox.Subnautica
     // ====== 互換性パッチ ======
     // PowerCell を受け入れる機器（EnergyMixin）で新セルも受け入れる
     [HarmonyPatch(typeof(EnergyMixin))]
-    internal static class EnergyMixin_Start_Patch
+    internal static class EnergyMixin_Awake_Patch
     {
-        [HarmonyPostfix, HarmonyPatch("Start")]
+        [HarmonyPostfix, HarmonyPatch("Awake")]
         private static void Postfix(EnergyMixin __instance)
         {
             if (__instance == null)
                 return;
 
-            var fields = new[]
+            // CustomBatteriesのパターンを参考に、compatibleBatteriesリストを更新
+            var compatibleBatteries = __instance.compatibleBatteries;
+            if (compatibleBatteries != null)
             {
-                "compatibleBatteries",
-                "batteryTechTypes",
-                "compatibleBatteryTypes",
-                "compatibleTech",
-            };
-
-            foreach (var name in fields)
-            {
-                var f = AccessTools.Field(__instance.GetType(), name);
-                if (f == null)
-                    continue;
-
-                var val = f.GetValue(__instance);
-                if (val is List<TechType> list)
+                // PowerCellが互換性リストにある場合、UraninitePowerCellも追加
+                if (
+                    (
+                        compatibleBatteries.Contains(TechType.PowerCell)
+                        || compatibleBatteries.Contains(TechType.PrecursorIonPowerCell)
+                    ) && !compatibleBatteries.Contains(Plugin.UraniniteCellTechType)
+                )
                 {
-                    if (
-                        (
-                            list.Contains(TechType.PowerCell)
-                            || list.Contains(TechType.PrecursorIonPowerCell)
-                        ) && !list.Contains(Plugin.UraniniteCellTechType)
-                    )
-                    {
-                        list.Add(Plugin.UraniniteCellTechType);
-                    }
-                    if (
-                        list.Contains(TechType.Battery)
-                        && !list.Contains(Plugin.UraniniteBatteryTechType)
-                    )
-                    {
-                        list.Add(Plugin.UraniniteBatteryTechType);
-                    }
-                    continue; // returnではなくcontinue
+                    compatibleBatteries.Add(Plugin.UraniniteCellTechType);
+                    Plugin.Log.LogInfo(
+                        $"Added UraninitePowerCell to compatibleBatteries for {__instance.gameObject.name}"
+                    );
                 }
-                if (val is TechType[] arr)
+
+                // Batteryが互換性リストにある場合、UraniniteBatteryも追加
+                if (
+                    compatibleBatteries.Contains(TechType.Battery)
+                    && !compatibleBatteries.Contains(Plugin.UraniniteBatteryTechType)
+                )
                 {
-                    var set = new HashSet<TechType>(arr);
-                    if (
-                        (
-                            set.Contains(TechType.PowerCell)
-                            || set.Contains(TechType.PrecursorIonPowerCell)
-                        ) && set.Add(Plugin.UraniniteCellTechType)
-                    )
-                    {
-                        f.SetValue(__instance, set.ToArray());
-                    }
-                    if (set.Contains(TechType.Battery) && set.Add(Plugin.UraniniteBatteryTechType))
-                    {
-                        f.SetValue(__instance, set.ToArray());
-                    }
-                    continue; // returnではなくcontinue
+                    compatibleBatteries.Add(Plugin.UraniniteBatteryTechType);
+                    Plugin.Log.LogInfo(
+                        $"Added UraniniteBattery to compatibleBatteries for {__instance.gameObject.name}"
+                    );
                 }
             }
 
-            // 可視モデルのマッピングにUraninitePowerCellを追加（PowerCellの見た目を流用）
-            EnergyMixinVisualUtil.TryAliasVisualModel(
-                __instance,
-                TechType.PowerCell,
-                Plugin.UraniniteCellTechType
+            // CustomBatteriesのパターンを参考に、batteryModelsを更新
+            if (__instance.batteryModels != null && __instance.batteryModels.Length > 0)
+            {
+                var modelsList = new List<EnergyMixin.BatteryModels>(__instance.batteryModels);
+                bool modelsUpdated = false;
+
+                // PowerCellモデルを探す
+                GameObject powerCellModel = null;
+                GameObject batteryModel = null;
+
+                foreach (var model in __instance.batteryModels)
+                {
+                    if (model.techType == TechType.PowerCell)
+                    {
+                        powerCellModel = model.model;
+                    }
+                    else if (model.techType == TechType.Battery)
+                    {
+                        batteryModel = model.model;
+                    }
+                }
+
+                // UraninitePowerCellのモデルを追加（PowerCellモデルを流用）
+                if (
+                    powerCellModel != null
+                    && !modelsList.Any(m => m.techType == Plugin.UraniniteCellTechType)
+                )
+                {
+                    modelsList.Add(
+                        new EnergyMixin.BatteryModels
+                        {
+                            techType = Plugin.UraniniteCellTechType,
+                            model = powerCellModel,
+                        }
+                    );
+                    modelsUpdated = true;
+                    Plugin.Log.LogInfo(
+                        $"Added UraninitePowerCell model for {__instance.gameObject.name}"
+                    );
+                }
+
+                // UraniniteBatteryのモデルを追加（Batteryモデルを流用）
+                if (
+                    batteryModel != null
+                    && !modelsList.Any(m => m.techType == Plugin.UraniniteBatteryTechType)
+                )
+                {
+                    modelsList.Add(
+                        new EnergyMixin.BatteryModels
+                        {
+                            techType = Plugin.UraniniteBatteryTechType,
+                            model = batteryModel,
+                        }
+                    );
+                    modelsUpdated = true;
+                    Plugin.Log.LogInfo(
+                        $"Added UraniniteBattery model for {__instance.gameObject.name}"
+                    );
+                }
+
+                if (modelsUpdated)
+                {
+                    __instance.batteryModels = modelsList.ToArray();
+                }
+            }
+        }
+    }
+
+    // バッテリー装備時の表示を制御するパッチ（CustomBatteriesを参考）
+    [HarmonyPatch(typeof(EnergyMixin), "NotifyHasBattery")]
+    internal static class EnergyMixin_NotifyHasBattery_Patch
+    {
+        [HarmonyPostfix]
+        private static void Postfix(EnergyMixin __instance, InventoryItem item)
+        {
+            if (item?.item == null)
+                return;
+
+            var techType = item.item.GetTechType();
+            if (
+                techType != Plugin.UraniniteCellTechType
+                && techType != Plugin.UraniniteBatteryTechType
+            )
+                return;
+
+            Plugin.Log.LogInfo(
+                $"NotifyHasBattery called for {techType} on {__instance.gameObject.name}"
             );
+
+            if (__instance.batteryModels == null || __instance.batteryModels.Length == 0)
+                return;
+
+            // 対応するモデルを探して表示
+            int modelToDisplay = 0; // デフォルトは最初のモデル
+            for (int b = 0; b < __instance.batteryModels.Length; b++)
+            {
+                if (__instance.batteryModels[b].techType == techType)
+                {
+                    modelToDisplay = b;
+                    break;
+                }
+            }
+
+            Plugin.Log.LogInfo($"Displaying battery model {modelToDisplay} for {techType}");
+            __instance.batteryModels[modelToDisplay].model.SetActive(true);
         }
     }
 
@@ -655,19 +730,30 @@ namespace AshFox.Subnautica
         private static readonly HashSet<int> processedTrashcans = new HashSet<int>();
 
         [HarmonyPostfix]
-        private static void Postfix(Trashcan __instance, Pickupable pickupable, bool verbose, ref bool __result)
+        private static void Postfix(
+            Trashcan __instance,
+            Pickupable pickupable,
+            bool verbose,
+            ref bool __result
+        )
         {
-            if (pickupable == null) return;
+            if (pickupable == null)
+                return;
 
             var techType = pickupable.GetTechType();
-            if (techType != Plugin.UraniniteCellTechType && techType != Plugin.UraniniteBatteryTechType)
+            if (
+                techType != Plugin.UraniniteCellTechType
+                && techType != Plugin.UraniniteBatteryTechType
+            )
                 return;
 
             var instanceId = __instance.GetInstanceID();
             var trashcanName = __instance.gameObject.name;
-            
-            Plugin.Log.LogInfo($"UraninitePowerCell disposal attempt in Trashcan: {trashcanName} (ID: {instanceId})");
-            
+
+            Plugin.Log.LogInfo(
+                $"UraninitePowerCell disposal attempt in Trashcan: {trashcanName} (ID: {instanceId})"
+            );
+
             // ILSpyの結果を参考に、nuclearWasteリストをチェック
             var nuclearWasteField = AccessTools.Field(typeof(Trashcan), "nuclearWaste");
             if (nuclearWasteField != null)
@@ -675,12 +761,19 @@ namespace AshFox.Subnautica
                 var nuclearWasteList = nuclearWasteField.GetValue(__instance) as List<TechType>;
                 if (nuclearWasteList != null)
                 {
-                    Plugin.Log.LogInfo($"Found nuclearWaste list with {nuclearWasteList.Count} items in {trashcanName}");
-                    
+                    Plugin.Log.LogInfo(
+                        $"Found nuclearWaste list with {nuclearWasteList.Count} items in {trashcanName}"
+                    );
+
                     // 放射性廃棄物処理装置かどうかを判定
-                    bool isNuclearWasteDisposal = IsNuclearWasteDisposal(__instance, nuclearWasteList);
-                    Plugin.Log.LogInfo($"IsNuclearWasteDisposal result for {trashcanName}: {isNuclearWasteDisposal}");
-                    
+                    bool isNuclearWasteDisposal = IsNuclearWasteDisposal(
+                        __instance,
+                        nuclearWasteList
+                    );
+                    Plugin.Log.LogInfo(
+                        $"IsNuclearWasteDisposal result for {trashcanName}: {isNuclearWasteDisposal}"
+                    );
+
                     if (isNuclearWasteDisposal)
                     {
                         // 放射性廃棄物処理装置の場合のみUraninitePowerCellを追加
@@ -689,63 +782,77 @@ namespace AshFox.Subnautica
                             if (!nuclearWasteList.Contains(Plugin.UraniniteCellTechType))
                             {
                                 nuclearWasteList.Add(Plugin.UraniniteCellTechType);
-                                Plugin.Log.LogInfo($"Added UraninitePowerCell to nuclear waste disposal");
+                                Plugin.Log.LogInfo(
+                                    $"Added UraninitePowerCell to nuclear waste disposal"
+                                );
                             }
                             if (!nuclearWasteList.Contains(Plugin.UraniniteBatteryTechType))
                             {
                                 nuclearWasteList.Add(Plugin.UraniniteBatteryTechType);
-                                Plugin.Log.LogInfo($"Added UraniniteBattery to nuclear waste disposal");
+                                Plugin.Log.LogInfo(
+                                    $"Added UraniniteBattery to nuclear waste disposal"
+                                );
                             }
                             processedTrashcans.Add(instanceId);
                         }
-                        
+
                         // 放射性廃棄物処理装置では廃棄を許可
                         __result = true;
-                        Plugin.Log.LogInfo($"UraninitePowerCell disposal allowed in nuclear waste disposal");
+                        Plugin.Log.LogInfo(
+                            $"UraninitePowerCell disposal allowed in nuclear waste disposal"
+                        );
                         return;
                     }
                     else
                     {
                         // 通常のゴミ箱では廃棄を禁止
                         __result = false;
-                        Plugin.Log.LogInfo($"UraninitePowerCell disposal blocked in regular trashcan");
+                        Plugin.Log.LogInfo(
+                            $"UraninitePowerCell disposal blocked in regular trashcan"
+                        );
                         return;
                     }
                 }
             }
-            
+
             // デフォルトの動作を維持
             Plugin.Log.LogInfo($"UraninitePowerCell disposal result: {__result}");
         }
-        
-        private static bool IsNuclearWasteDisposal(Trashcan trashcan, List<TechType> nuclearWasteList)
+
+        private static bool IsNuclearWasteDisposal(
+            Trashcan trashcan,
+            List<TechType> nuclearWasteList
+        )
         {
             var name = trashcan.gameObject.name;
             Plugin.Log.LogInfo($"Checking Trashcan name: {name}");
-            
+
             // RamunesCustomizedStorageのログパターンを参考に判定
             // NuclearWaste: storageRoot (小文字s) - 放射性廃棄物処理装置
             // TrashCan: StorageRoot (大文字S) - 通常のゴミ箱
-            
+
             // LabTrashcan は放射性廃棄物処理装置
             if (name.Contains("LabTrashcan"))
             {
                 Plugin.Log.LogInfo($"Detected nuclear waste disposal: LabTrashcan");
                 return true;
             }
-            
+
             // Trashcans は通常のゴミ箱
             if (name.Contains("Trashcans"))
             {
                 Plugin.Log.LogInfo($"Detected regular trashcan: Trashcans");
                 return false;
             }
-            
+
             // フォールバック：名前ベースの判定
             var lowerName = name.ToLower();
-            bool isNuclear = lowerName.Contains("nuclear") || lowerName.Contains("waste") || lowerName.Contains("lab");
+            bool isNuclear =
+                lowerName.Contains("nuclear")
+                || lowerName.Contains("waste")
+                || lowerName.Contains("lab");
             Plugin.Log.LogInfo($"Fallback name-based detection for {name}: {isNuclear}");
-            
+
             return isNuclear;
         }
     }
