@@ -31,3 +31,13 @@ if [ $? -eq 0 ]; then
     mkdir -p ./../Releases
     cp -r ./UraninitePowerCell ./../Releases
 fi
+
+echo -e "\n================================================\n"
+
+cd ..
+cd ./VehicleSpeedUpgrade
+./build.sh
+if [ $? -eq 0 ]; then
+    mkdir -p ./../Releases
+    cp -r ./VehicleSpeedUpgrade ./../Releases
+fi
