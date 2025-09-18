@@ -62,57 +62,77 @@ namespace AshFox.Subnautica
 
         public String GetString(string key, string defaultValue = null)
         {
+            return GetString(key, () => defaultValue);
+        }
+
+        public String GetString(string key, Func<string> defaultValue)
+        {
             if (_config == null)
             {
-                return defaultValue;
+                return defaultValue();
             }
 
             var value = getValue(key);
             if (value == null || value.Type != JTokenType.String)
             {
-                return defaultValue;
+                return defaultValue();
             }
             return value.ToString();
         }
 
         public int GetInt(string key, int defaultValue = 0)
         {
+            return GetInt(key, () => defaultValue);
+        }
+
+        public int GetInt(string key, Func<int> defaultValue)
+        {
             if (_config == null)
             {
-                return defaultValue;
+                return defaultValue();
             }
             var value = getValue(key);
             if (value == null || value.Type != JTokenType.Integer)
             {
-                return defaultValue;
+                return defaultValue();
             }
             return value.Value<int>();
         }
 
         public float GetFloat(string key, float defaultValue = 0.0f)
         {
+            return GetFloat(key, () => defaultValue);
+        }
+
+        public float GetFloat(string key, Func<float> defaultValue)
+        {
             if (_config == null)
             {
-                return defaultValue;
+                return defaultValue();
             }
             var value = getValue(key);
             if (value == null || value.Type != JTokenType.Float)
             {
-                return defaultValue;
+                return defaultValue();
             }
             return value.Value<float>();
         }
 
         public bool GetBool(string key, bool defaultValue = false)
         {
+            return GetBool(key, () => defaultValue);
+        }
+
+        public bool GetBool(string key, Func<bool> defaultValue)
+        {
             if (_config == null)
             {
-                return defaultValue;
+                return defaultValue();
             }
             var value = getValue(key);
             if (value == null || value.Type != JTokenType.Boolean)
             {
-                return defaultValue;
+                return defaultValue();
             }
             return value.Value<bool>();
         }

@@ -126,15 +126,27 @@ namespace AshFox.Subnautica
         );
         public static readonly float CyclopsMK1FastForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Fast.ForwardAccel",
-            DEFAULT_CYCLOPS_MK1_FORCE
+            () =>
+                Config.GetFloat(
+                    "Multiplier.Cyclops.MK1.Flank.ForwardAccel",
+                    DEFAULT_CYCLOPS_MK1_FORCE
+                )
         );
         public static readonly float CyclopsMK1FastVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Fast.VerticalAccel",
-            DEFAULT_CYCLOPS_MK1_FORCE
+            () =>
+                Config.GetFloat(
+                    "Multiplier.Cyclops.MK1.Flank.VerticalAccel",
+                    DEFAULT_CYCLOPS_MK1_FORCE
+                )
         );
         public static readonly float CyclopsMK1FastTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Fast.TurningTorque",
-            DEFAULT_CYCLOPS_MK1_FORCE
+            () =>
+                Config.GetFloat(
+                    "Multiplier.Cyclops.MK1.Flank.TurningTorque",
+                    DEFAULT_CYCLOPS_MK1_FORCE
+                )
         );
 
         // public static readonly float CyclopsMK1MassMultiplier = Config.GetFloat(
@@ -178,15 +190,27 @@ namespace AshFox.Subnautica
 
         public static readonly float CyclopsMK2FastForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Fast.ForwardAccel",
-            DEFAULT_CYCLOPS_MK2_FORCE
+            () =>
+                Config.GetFloat(
+                    "Multiplier.Cyclops.MK2.Flank.ForwardAccel",
+                    DEFAULT_CYCLOPS_MK2_FORCE
+                )
         );
         public static readonly float CyclopsMK2FastVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Fast.VerticalAccel",
-            DEFAULT_CYCLOPS_MK2_FORCE
+            () =>
+                Config.GetFloat(
+                    "Multiplier.Cyclops.MK2.Flank.VerticalAccel",
+                    DEFAULT_CYCLOPS_MK2_FORCE
+                )
         );
         public static readonly float CyclopsMK2FastTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Fast.TurningTorque",
-            DEFAULT_CYCLOPS_MK2_FORCE
+            () =>
+                Config.GetFloat(
+                    "Multiplier.Cyclops.MK2.Flank.TurningTorque",
+                    DEFAULT_CYCLOPS_MK2_FORCE
+                )
         );
 
         // public static readonly float CyclopsMK2MassMultiplier = Config.GetFloat(
