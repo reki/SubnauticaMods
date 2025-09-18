@@ -20,7 +20,7 @@ namespace AshFox.Subnautica
     {
         public const string PluginGuid = "jp.ashfox.uraninitepowercell";
         public const string PluginName = "UraninitePowerCell";
-        public const string PluginVersion = "0.9.0";
+        public const string PluginVersion = "1.0.0";
 
         internal static ManualLogSource Log;
         internal static TechType UraniniteCellTechType;
