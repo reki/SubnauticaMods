@@ -15,136 +15,167 @@ namespace AshFox.Subnautica
         private static readonly float DEFAULT_CYCLOPS_MK2_FORCE = 4.0f;
         private static readonly float DEFAULT_VECHICLE_UPDATE_DISTANCE = 2.0f;
         private static readonly float DEFAULT_CYCLOPS_UPDATE_DISTANCE = 2.0f;
+        private static readonly Func<float, bool> CHECK_POSITIVE_FLOAT = (value) => value > 0.0f;
         private static readonly ConfigTemplate Config = new ConfigTemplate("config.json");
         private static readonly bool DuplicateEffect = Config.GetBool("DuplicateEffect", false);
         public static readonly bool WriteDebugLog = Config.GetBool("WriteDebugLog", false);
         public static readonly float VehicleUpdateDistance = Config.GetFloat(
             "VehicleUpdateDistance",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_VECHICLE_UPDATE_DISTANCE
         );
         public static readonly float CyclopsUpdateDistance = Config.GetFloat(
             "CyclopsUpdateDistance",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_UPDATE_DISTANCE
         );
 
         // SeamothMK1
         public static readonly float SeamothMK1ForwardForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK1.ForwardForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float SeamothMK1BackwardForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK1.BackwardForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float SeamothMK1SidewardForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK1.SidewardForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float SeamothMK1VerticalForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK1.VerticalForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
 
         // SeamothMK2
         public static readonly float SeamothMK2ForwardForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK2.ForwardForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float SeamothMK2BackwardForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK2.BackwardForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float SeamothMK2SidewardForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK2.SidewardForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float SeamothMK2VerticalForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK2.VerticalForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
 
         // ExosuitMK1
         public static readonly float ExosuitMK1ForwardForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK1.ForwardForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float ExosuitMK1BackwardForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK1.BackwardForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float ExosuitMK1SidewardForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK1.SidewardForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float ExosuitMK1VerticalForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK1.VerticalForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
 
         // ExosuitMK2
         public static readonly float ExosuitMK2ForwardForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK2.ForwardForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float ExosuitMK2BackwardForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK2.BackwardForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float ExosuitMK2SidewardForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK2.SidewardForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float ExosuitMK2VerticalForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK2.VerticalForce",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
 
         // CyclopsMK1
         public static readonly float CyclopsMK1SlowForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Slow.ForwardAccel",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK1_FORCE
         );
         public static readonly float CyclopsMK1SlowVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Slow.VerticalAccel",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK1_FORCE
         );
         public static readonly float CyclopsMK1SlowTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Slow.TurningTorque",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK1_FORCE
         );
         public static readonly float CyclopsMK1StandardForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Standard.ForwardAccel",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK1_FORCE
         );
         public static readonly float CyclopsMK1StandardVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Standard.VerticalAccel",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK1_FORCE
         );
         public static readonly float CyclopsMK1StandardTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Standard.TurningTorque",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK1_FORCE
         );
         public static readonly float CyclopsMK1FastForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Fast.ForwardAccel",
+            CHECK_POSITIVE_FLOAT,
             () =>
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK1.Flank.ForwardAccel",
+                    CHECK_POSITIVE_FLOAT,
                     DEFAULT_CYCLOPS_MK1_FORCE
                 )
         );
         public static readonly float CyclopsMK1FastVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Fast.VerticalAccel",
+            CHECK_POSITIVE_FLOAT,
             () =>
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK1.Flank.VerticalAccel",
+                    CHECK_POSITIVE_FLOAT,
                     DEFAULT_CYCLOPS_MK1_FORCE
                 )
         );
         public static readonly float CyclopsMK1FastTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Fast.TurningTorque",
+            CHECK_POSITIVE_FLOAT,
             () =>
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK1.Flank.TurningTorque",
+                    CHECK_POSITIVE_FLOAT,
                     DEFAULT_CYCLOPS_MK1_FORCE
                 )
         );
@@ -165,50 +196,62 @@ namespace AshFox.Subnautica
         // CyclopsMK2
         public static readonly float CyclopsMK2SlowForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Slow.ForwardAccel",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK2_FORCE
         );
         public static readonly float CyclopsMK2SlowVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Slow.VerticalAccel",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK2_FORCE
         );
         public static readonly float CyclopsMK2SlowTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Slow.TurningTorque",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK2_FORCE
         );
         public static readonly float CyclopsMK2StandardForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Standard.ForwardAccel",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK2_FORCE
         );
         public static readonly float CyclopsMK2StandardVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Standard.VerticalAccel",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK2_FORCE
         );
         public static readonly float CyclopsMK2StandardTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Standard.TurningTorque",
+            CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK2_FORCE
         );
 
         public static readonly float CyclopsMK2FastForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Fast.ForwardAccel",
+            CHECK_POSITIVE_FLOAT,
             () =>
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK2.Flank.ForwardAccel",
+                    CHECK_POSITIVE_FLOAT,
                     DEFAULT_CYCLOPS_MK2_FORCE
                 )
         );
         public static readonly float CyclopsMK2FastVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Fast.VerticalAccel",
+            CHECK_POSITIVE_FLOAT,
             () =>
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK2.Flank.VerticalAccel",
+                    CHECK_POSITIVE_FLOAT,
                     DEFAULT_CYCLOPS_MK2_FORCE
                 )
         );
         public static readonly float CyclopsMK2FastTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Fast.TurningTorque",
+            CHECK_POSITIVE_FLOAT,
             () =>
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK2.Flank.TurningTorque",
+                    CHECK_POSITIVE_FLOAT,
                     DEFAULT_CYCLOPS_MK2_FORCE
                 )
         );

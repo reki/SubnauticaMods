@@ -62,10 +62,24 @@ namespace AshFox.Subnautica
 
         public String GetString(string key, string defaultValue = null)
         {
-            return GetString(key, () => defaultValue);
+            return GetString(key, (value) => true, () => defaultValue);
+        }
+
+        public String GetString(string key, Func<string, bool> checkValueFunc, string defaultValue = null)
+        {
+            return GetString(key, checkValueFunc, () => defaultValue);
         }
 
         public String GetString(string key, Func<string> defaultValue)
+        {
+            return GetString(key, (value) => true, defaultValue);
+        }
+
+        public String GetString(
+            string key,
+            Func<string, bool> checkValueFunc,
+            Func<string> defaultValue
+        )
         {
             if (_config == null)
             {
@@ -77,15 +91,30 @@ namespace AshFox.Subnautica
             {
                 return defaultValue();
             }
-            return value.ToString();
+            var result = value.ToString();
+            if (!checkValueFunc(result))
+            {
+                return defaultValue();
+            }
+            return result;
         }
 
         public int GetInt(string key, int defaultValue = 0)
         {
-            return GetInt(key, () => defaultValue);
+            return GetInt(key, (value) => true, () => defaultValue);
+        }
+
+        public int GetInt(string key, Func<int, bool> checkValueFunc, int defaultValue = 0)
+        {
+            return GetInt(key, checkValueFunc, () => defaultValue);
         }
 
         public int GetInt(string key, Func<int> defaultValue)
+        {
+            return GetInt(key, (value) => true, defaultValue);
+        }
+
+        public int GetInt(string key, Func<int, bool> checkValueFunc, Func<int> defaultValue)
         {
             if (_config == null)
             {
@@ -96,15 +125,34 @@ namespace AshFox.Subnautica
             {
                 return defaultValue();
             }
-            return value.Value<int>();
+            var result = value.Value<int>();
+            if (!checkValueFunc(result))
+            {
+                return defaultValue();
+            }
+            return result;
         }
 
         public float GetFloat(string key, float defaultValue = 0.0f)
         {
-            return GetFloat(key, () => defaultValue);
+            return GetFloat(key, (value) => true, () => defaultValue);
+        }
+
+        public float GetFloat(string key, Func<float, bool> checkValueFunc, float defaultValue = 0.0f)
+        {
+            return GetFloat(key, checkValueFunc, () => defaultValue);
         }
 
         public float GetFloat(string key, Func<float> defaultValue)
+        {
+            return GetFloat(key, (value) => true, defaultValue);
+        }
+
+        public float GetFloat(
+            string key,
+            Func<float, bool> checkValueFunc,
+            Func<float> defaultValue
+        )
         {
             if (_config == null)
             {
@@ -115,15 +163,30 @@ namespace AshFox.Subnautica
             {
                 return defaultValue();
             }
-            return value.Value<float>();
+            var result = value.Value<float>();
+            if (!checkValueFunc(result))
+            {
+                return defaultValue();
+            }
+            return result;
         }
 
         public bool GetBool(string key, bool defaultValue = false)
         {
-            return GetBool(key, () => defaultValue);
+            return GetBool(key, (value) => true, () => defaultValue);
+        }
+
+        public bool GetBool(string key, Func<bool, bool> checkValueFunc, bool defaultValue = false)
+        {
+            return GetBool(key, checkValueFunc, () => defaultValue);
         }
 
         public bool GetBool(string key, Func<bool> defaultValue)
+        {
+            return GetBool(key, (value) => true, defaultValue);
+        }
+
+        public bool GetBool(string key, Func<bool, bool> checkValueFunc, Func<bool> defaultValue)
         {
             if (_config == null)
             {
@@ -134,7 +197,12 @@ namespace AshFox.Subnautica
             {
                 return defaultValue();
             }
-            return value.Value<bool>();
+            var result = value.Value<bool>();
+            if (!checkValueFunc(result))
+            {
+                return defaultValue();
+            }
+            return result;
         }
     }
 }
