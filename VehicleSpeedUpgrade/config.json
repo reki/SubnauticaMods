@@ -1,18 +1,21 @@
 {
     "WriteDebugLog": false,
+    "EnableEnergyConsumptionRate": true,
     "Multiplier":{
         "Seamoth": {
             "MK1": {
                 "ForwardForce": 2.0,
                 "BackwardForce": 2.0,
                 "SidewardForce": 2.0,
-                "VerticalForce": 2.0
+                "VerticalForce": 2.0,
+                "BatteryEnergyConsumptionValue": 0.02
             },
             "MK2": {
                 "ForwardForce": 2.5,
                 "BackwardForce": 2.5,
                 "SidewardForce": 2.5,
-                "VerticalForce": 2.5
+                "VerticalForce": 2.5,
+                "BatteryEnergyConsumptionValue": 0.03
             }
         },
         "Exosuit": {
@@ -20,13 +23,15 @@
                 "ForwardForce": 2.5,
                 "BackwardForce": 2.5,
                 "SidewardForce": 2.5,
-                "VerticalForce": 2.5
+                "VerticalForce": 2.5,
+                "BatteryEnergyConsumptionValue": 0.02
             },
             "MK2": {
                 "ForwardForce": 3.0,
                 "BackwardForce": 3.0,
                 "SidewardForce": 3.0,
-                "VerticalForce": 3.0
+                "VerticalForce": 3.0,
+                "BatteryEnergyConsumptionValue": 0.03
             }
         },
         "Cyclops": {
@@ -34,34 +39,40 @@
                 "Slow": {
                     "ForwardAccel": 2.0,
                     "VerticalAccel": 2.0,
-                    "TurningTorque": 2.0
+                    "TurningTorque": 2.0,
+                    "BatteryEnergyConsumptionValue": 0.05
                 },
                 "Standard": {
                     "ForwardAccel": 2.5,
                     "VerticalAccel": 2.5,
-                    "TurningTorque": 2.5
+                    "TurningTorque": 2.5,
+                    "BatteryEnergyConsumptionValue": 0.1
                 },
                 "Fast": {
                     "ForwardAccel": 2.5,
                     "VerticalAccel": 2.5,
-                    "TurningTorque": 2.5
+                    "TurningTorque": 2.5,
+                    "BatteryEnergyConsumptionValue": 0.2
                 }
             },
             "MK2": {
                 "Slow": {
                     "ForwardAccel": 3.0,
                     "VerticalAccel": 3.0,
-                    "TurningTorque": 3.0
+                    "TurningTorque": 3.0,
+                    "BatteryEnergyConsumptionValue": 0.08
                 },
                 "Standard": {
                     "ForwardAccel": 4.5,
                     "VerticalAccel": 4.5,
-                    "TurningTorque": 4.5
+                    "TurningTorque": 4.5,
+                    "BatteryEnergyConsumptionValue": 0.12
                 },
                 "Fast": {
                     "ForwardAccel": 5.0,
                     "VerticalAccel": 5.0,
-                    "TurningTorque": 5.0
+                    "TurningTorque": 5.0,
+                    "BatteryEnergyConsumptionValue": 0.25
                 }
             }
         }

@@ -9,16 +9,45 @@ namespace AshFox.Subnautica
     // 乗り物の速度をアップグレードするパッチ
     internal static class VehicleSpeedPatch
     {
+        // VehicleDefaults
+        private static readonly float DEFAULT_VECHICLE_UPDATE_DISTANCE = 2.0f;
         private static readonly float DEFAULT_MK1_FORCE = 2.0f;
         private static readonly float DEFAULT_MK2_FORCE = 2.5f;
-        private static readonly float DEFAULT_CYCLOPS_MK1_FORCE = 2.5f;
-        private static readonly float DEFAULT_CYCLOPS_MK2_FORCE = 4.0f;
-        private static readonly float DEFAULT_VECHICLE_UPDATE_DISTANCE = 2.0f;
+        private static readonly float DEFAULT_MK1_BATTERY_ENERGY_CONSUMPTION_VALUE = 0.02f;
+        private static readonly float DEFAULT_MK2_BATTERY_ENERGY_CONSUMPTION_VALUE = 0.03f;
+
+        // CyclopsDefaults
         private static readonly float DEFAULT_CYCLOPS_UPDATE_DISTANCE = 2.0f;
+        private static readonly float DEFAULT_CYCLOPS_MK1_SLOW_FORCE = 2.5f;
+        private static readonly float DEFAULT_CYCLOPS_MK1_STANDARD_FORCE = 2.5f;
+        private static readonly float DEFAULT_CYCLOPS_MK1_FAST_FORCE = 2.5f;
+        private static readonly float DEFAULT_CYCLOPS_MK1_SLOW_BATTERY_ENERGY_CONSUMPTION_VALUE =
+            0.05f;
+        private static readonly float DEFAULT_CYCLOPS_MK1_STANDARD_BATTERY_ENERGY_CONSUMPTION_VALUE =
+            0.1f;
+        private static readonly float DEFAULT_CYCLOPS_MK1_FAST_BATTERY_ENERGY_CONSUMPTION_VALUE =
+            0.2f;
+        private static readonly float DEFAULT_CYCLOPS_MK2_SLOW_FORCE = 4.0f;
+        private static readonly float DEFAULT_CYCLOPS_MK2_STANDARD_FORCE = 4.0f;
+        private static readonly float DEFAULT_CYCLOPS_MK2_FAST_FORCE = 4.0f;
+        private static readonly float DEFAULT_CYCLOPS_MK2_SLOW_BATTERY_ENERGY_CONSUMPTION_VALUE =
+            0.08f;
+        private static readonly float DEFAULT_CYCLOPS_MK2_STANDARD_BATTERY_ENERGY_CONSUMPTION_VALUE =
+            0.12f;
+        private static readonly float DEFAULT_CYCLOPS_MK2_FAST_BATTERY_ENERGY_CONSUMPTION_VALUE =
+            0.25f;
+
         private static readonly Func<float, bool> CHECK_POSITIVE_FLOAT = (value) => value > 0.0f;
+        private static readonly Func<float, bool> CHECK_GREATER_THAN_OR_EQUAL_TO_1_FLOAT = (
+            value
+        ) => value >= 1.0f;
         private static readonly ConfigTemplate Config = new ConfigTemplate("config.json");
         private static readonly bool DuplicateEffect = Config.GetBool("DuplicateEffect", false);
         public static readonly bool WriteDebugLog = Config.GetBool("WriteDebugLog", false);
+        public static readonly bool EnableEnergyConsumptionRate = Config.GetBool(
+            "EnableEnergyConsumptionRate",
+            true
+        );
         public static readonly float VehicleUpdateDistance = Config.GetFloat(
             "VehicleUpdateDistance",
             CHECK_POSITIVE_FLOAT,
@@ -51,6 +80,11 @@ namespace AshFox.Subnautica
             CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
+        public static readonly float SeamothMK1BatteryEnergyConsumptionValue = Config.GetFloat(
+            "Multiplier.Seamoth.MK1.BatteryEnergyConsumption",
+            CHECK_GREATER_THAN_OR_EQUAL_TO_1_FLOAT,
+            DEFAULT_MK1_BATTERY_ENERGY_CONSUMPTION_VALUE
+        );
 
         // SeamothMK2
         public static readonly float SeamothMK2ForwardForceMultiplier = Config.GetFloat(
@@ -72,6 +106,11 @@ namespace AshFox.Subnautica
             "Multiplier.Seamoth.MK2.VerticalForce",
             CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
+        );
+        public static readonly float SeamothMK2BatteryEnergyConsumptionValue = Config.GetFloat(
+            "Multiplier.Seamoth.MK2.BatteryEnergyConsumption",
+            CHECK_GREATER_THAN_OR_EQUAL_TO_1_FLOAT,
+            DEFAULT_MK2_BATTERY_ENERGY_CONSUMPTION_VALUE
         );
 
         // ExosuitMK1
@@ -95,6 +134,11 @@ namespace AshFox.Subnautica
             CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
+        public static readonly float ExosuitMK1BatteryEnergyConsumptionValue = Config.GetFloat(
+            "Multiplier.Exosuit.MK1.BatteryEnergyConsumption",
+            CHECK_GREATER_THAN_OR_EQUAL_TO_1_FLOAT,
+            DEFAULT_MK1_BATTERY_ENERGY_CONSUMPTION_VALUE
+        );
 
         // ExosuitMK2
         public static readonly float ExosuitMK2ForwardForceMultiplier = Config.GetFloat(
@@ -117,38 +161,58 @@ namespace AshFox.Subnautica
             CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
+        public static readonly float ExosuitMK2BatteryEnergyConsumptionValue = Config.GetFloat(
+            "Multiplier.Exosuit.MK2.BatteryEnergyConsumption",
+            CHECK_GREATER_THAN_OR_EQUAL_TO_1_FLOAT,
+            DEFAULT_MK2_BATTERY_ENERGY_CONSUMPTION_VALUE
+        );
 
-        // CyclopsMK1
+        // CyclopsMK1(Slow)
         public static readonly float CyclopsMK1SlowForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Slow.ForwardAccel",
             CHECK_POSITIVE_FLOAT,
-            DEFAULT_CYCLOPS_MK1_FORCE
+            DEFAULT_CYCLOPS_MK1_SLOW_FORCE
         );
         public static readonly float CyclopsMK1SlowVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Slow.VerticalAccel",
             CHECK_POSITIVE_FLOAT,
-            DEFAULT_CYCLOPS_MK1_FORCE
+            DEFAULT_CYCLOPS_MK1_SLOW_FORCE
         );
         public static readonly float CyclopsMK1SlowTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Slow.TurningTorque",
             CHECK_POSITIVE_FLOAT,
-            DEFAULT_CYCLOPS_MK1_FORCE
+            DEFAULT_CYCLOPS_MK1_SLOW_FORCE
         );
+        public static readonly float CyclopsMK1SlowBatteryEnergyConsumptionValue = Config.GetFloat(
+            "Multiplier.Cyclops.MK1.Slow.BatteryEnergyConsumption",
+            CHECK_GREATER_THAN_OR_EQUAL_TO_1_FLOAT,
+            DEFAULT_CYCLOPS_MK1_SLOW_BATTERY_ENERGY_CONSUMPTION_VALUE
+        );
+
+        // CyclopsMK1(Standard)
         public static readonly float CyclopsMK1StandardForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Standard.ForwardAccel",
             CHECK_POSITIVE_FLOAT,
-            DEFAULT_CYCLOPS_MK1_FORCE
+            DEFAULT_CYCLOPS_MK1_STANDARD_FORCE
         );
         public static readonly float CyclopsMK1StandardVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Standard.VerticalAccel",
             CHECK_POSITIVE_FLOAT,
-            DEFAULT_CYCLOPS_MK1_FORCE
+            DEFAULT_CYCLOPS_MK1_STANDARD_FORCE
         );
         public static readonly float CyclopsMK1StandardTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Standard.TurningTorque",
             CHECK_POSITIVE_FLOAT,
-            DEFAULT_CYCLOPS_MK1_FORCE
+            DEFAULT_CYCLOPS_MK1_STANDARD_FORCE
         );
+        public static readonly float CyclopsMK1StandardBatteryEnergyConsumptionValue =
+            Config.GetFloat(
+                "Multiplier.Cyclops.MK1.Standard.BatteryEnergyConsumption",
+                CHECK_GREATER_THAN_OR_EQUAL_TO_1_FLOAT,
+                DEFAULT_CYCLOPS_MK1_STANDARD_BATTERY_ENERGY_CONSUMPTION_VALUE
+            );
+
+        // CyclopsMK1(Fast)
         public static readonly float CyclopsMK1FastForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Fast.ForwardAccel",
             CHECK_POSITIVE_FLOAT,
@@ -156,7 +220,7 @@ namespace AshFox.Subnautica
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK1.Flank.ForwardAccel",
                     CHECK_POSITIVE_FLOAT,
-                    DEFAULT_CYCLOPS_MK1_FORCE
+                    DEFAULT_CYCLOPS_MK1_FAST_FORCE
                 )
         );
         public static readonly float CyclopsMK1FastVerticalAccelMultiplier = Config.GetFloat(
@@ -166,7 +230,7 @@ namespace AshFox.Subnautica
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK1.Flank.VerticalAccel",
                     CHECK_POSITIVE_FLOAT,
-                    DEFAULT_CYCLOPS_MK1_FORCE
+                    DEFAULT_CYCLOPS_MK1_FAST_FORCE
                 )
         );
         public static readonly float CyclopsMK1FastTurningTorqueMultiplier = Config.GetFloat(
@@ -176,55 +240,66 @@ namespace AshFox.Subnautica
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK1.Flank.TurningTorque",
                     CHECK_POSITIVE_FLOAT,
-                    DEFAULT_CYCLOPS_MK1_FORCE
+                    DEFAULT_CYCLOPS_MK1_FAST_FORCE
+                )
+        );
+        public static readonly float CyclopsMK1FastBatteryEnergyConsumptionValue = Config.GetFloat(
+            "Multiplier.Cyclops.MK1.Fast.BatteryEnergyConsumption",
+            CHECK_GREATER_THAN_OR_EQUAL_TO_1_FLOAT,
+            () =>
+                Config.GetFloat(
+                    "Multiplier.Cyclops.MK1.Flank.BatteryEnergyConsumption",
+                    CHECK_GREATER_THAN_OR_EQUAL_TO_1_FLOAT,
+                    DEFAULT_CYCLOPS_MK1_FAST_BATTERY_ENERGY_CONSUMPTION_VALUE
                 )
         );
 
-        // public static readonly float CyclopsMK1MassMultiplier = Config.GetFloat(
-        //     "Multiplier.Cyclops.MK1.Mass",
-        //     DEFAULT_CYCLOPS_MASS
-        // );
-        // public static readonly float CyclopsMK1DragMultiplier = Config.GetFloat(
-        //     "Multiplier.Cyclops.MK1.Drag",
-        //     DEFAULT_CYCLOPS_DRAG
-        // );
-        // public static readonly float CyclopsMK1AngularDragMultiplier = Config.GetFloat(
-        //     "Multiplier.Cyclops.MK1.AngularDrag",
-        //     DEFAULT_CYCLOPS_ANGULAR_DRAG
-        // );
-
-        // CyclopsMK2
+        // CyclopsMK2(Slow)
         public static readonly float CyclopsMK2SlowForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Slow.ForwardAccel",
             CHECK_POSITIVE_FLOAT,
-            DEFAULT_CYCLOPS_MK2_FORCE
+            DEFAULT_CYCLOPS_MK2_SLOW_FORCE
         );
         public static readonly float CyclopsMK2SlowVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Slow.VerticalAccel",
             CHECK_POSITIVE_FLOAT,
-            DEFAULT_CYCLOPS_MK2_FORCE
+            DEFAULT_CYCLOPS_MK2_SLOW_FORCE
         );
         public static readonly float CyclopsMK2SlowTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Slow.TurningTorque",
             CHECK_POSITIVE_FLOAT,
-            DEFAULT_CYCLOPS_MK2_FORCE
+            DEFAULT_CYCLOPS_MK2_SLOW_FORCE
         );
+        public static readonly float CyclopsMK2SlowBatteryEnergyConsumptionValue = Config.GetFloat(
+            "Multiplier.Cyclops.MK2.Slow.BatteryEnergyConsumption",
+            CHECK_GREATER_THAN_OR_EQUAL_TO_1_FLOAT,
+            DEFAULT_CYCLOPS_MK2_SLOW_BATTERY_ENERGY_CONSUMPTION_VALUE
+        );
+
+        // CyclopsMK2(Standard)
         public static readonly float CyclopsMK2StandardForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Standard.ForwardAccel",
             CHECK_POSITIVE_FLOAT,
-            DEFAULT_CYCLOPS_MK2_FORCE
+            DEFAULT_CYCLOPS_MK2_STANDARD_FORCE
         );
         public static readonly float CyclopsMK2StandardVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Standard.VerticalAccel",
             CHECK_POSITIVE_FLOAT,
-            DEFAULT_CYCLOPS_MK2_FORCE
+            DEFAULT_CYCLOPS_MK2_STANDARD_FORCE
         );
         public static readonly float CyclopsMK2StandardTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Standard.TurningTorque",
             CHECK_POSITIVE_FLOAT,
-            DEFAULT_CYCLOPS_MK2_FORCE
+            DEFAULT_CYCLOPS_MK2_STANDARD_FORCE
         );
+        public static readonly float CyclopsMK2StandardBatteryEnergyConsumptionValue =
+            Config.GetFloat(
+                "Multiplier.Cyclops.MK2.Standard.BatteryEnergyConsumption",
+                CHECK_GREATER_THAN_OR_EQUAL_TO_1_FLOAT,
+                DEFAULT_CYCLOPS_MK2_STANDARD_BATTERY_ENERGY_CONSUMPTION_VALUE
+            );
 
+        // CyclopsMK2(Fast)
         public static readonly float CyclopsMK2FastForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Fast.ForwardAccel",
             CHECK_POSITIVE_FLOAT,
@@ -232,7 +307,7 @@ namespace AshFox.Subnautica
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK2.Flank.ForwardAccel",
                     CHECK_POSITIVE_FLOAT,
-                    DEFAULT_CYCLOPS_MK2_FORCE
+                    DEFAULT_CYCLOPS_MK2_FAST_FORCE
                 )
         );
         public static readonly float CyclopsMK2FastVerticalAccelMultiplier = Config.GetFloat(
@@ -242,7 +317,7 @@ namespace AshFox.Subnautica
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK2.Flank.VerticalAccel",
                     CHECK_POSITIVE_FLOAT,
-                    DEFAULT_CYCLOPS_MK2_FORCE
+                    DEFAULT_CYCLOPS_MK2_FAST_FORCE
                 )
         );
         public static readonly float CyclopsMK2FastTurningTorqueMultiplier = Config.GetFloat(
@@ -252,22 +327,19 @@ namespace AshFox.Subnautica
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK2.Flank.TurningTorque",
                     CHECK_POSITIVE_FLOAT,
-                    DEFAULT_CYCLOPS_MK2_FORCE
+                    DEFAULT_CYCLOPS_MK2_FAST_FORCE
                 )
         );
-
-        // public static readonly float CyclopsMK2MassMultiplier = Config.GetFloat(
-        //     "Multiplier.Cyclops.MK2.Mass",
-        //     DEFAULT_CYCLOPS_MASS
-        // );
-        // public static readonly float CyclopsMK2DragMultiplier = Config.GetFloat(
-        //     "Multiplier.Cyclops.MK2.Drag",
-        //     DEFAULT_CYCLOPS_DRAG
-        // );
-        // public static readonly float CyclopsMK2AngularDragMultiplier = Config.GetFloat(
-        //     "Multiplier.Cyclops.MK2.AngularDrag",
-        //     DEFAULT_CYCLOPS_ANGULAR_DRAG
-        // );
+        public static readonly float CyclopsMK2FastBatteryEnergyConsumptionValue = Config.GetFloat(
+            "Multiplier.Cyclops.MK2.Fast.BatteryEnergyConsumption",
+            CHECK_GREATER_THAN_OR_EQUAL_TO_1_FLOAT,
+            () =>
+                Config.GetFloat(
+                    "Multiplier.Cyclops.MK2.Flank.BatteryEnergyConsumption",
+                    CHECK_GREATER_THAN_OR_EQUAL_TO_1_FLOAT,
+                    DEFAULT_CYCLOPS_MK2_FAST_BATTERY_ENERGY_CONSUMPTION_VALUE
+                )
+        );
 
         private static float lastLogTime = 0f;
 
@@ -276,29 +348,46 @@ namespace AshFox.Subnautica
             if (!WriteDebugLog)
                 return;
 
+            Plugin.Log.LogInfo("UpdateDistance: ");
+            Plugin.Log.LogInfo("VehicleUpdateDistance: " + VehicleUpdateDistance);
+            Plugin.Log.LogInfo("CyclopsUpdateDistance: " + CyclopsUpdateDistance);
+            Plugin.Log.LogInfo("EnableEnergyConsumptionRate: " + EnableEnergyConsumptionRate);
+
             Plugin.Log.LogInfo("SeamothMK1: ");
             Plugin.Log.LogInfo("ForwardForceMultiplier: " + SeamothMK1ForwardForceMultiplier);
             Plugin.Log.LogInfo("BackwardForceMultiplier: " + SeamothMK1BackwardForceMultiplier);
             Plugin.Log.LogInfo("SidewardForceMultiplier: " + SeamothMK1SidewardForceMultiplier);
             Plugin.Log.LogInfo("VerticalForceMultiplier: " + SeamothMK1VerticalForceMultiplier);
+            Plugin.Log.LogInfo(
+                "BatteryEnergyConsumptionValue: " + SeamothMK1BatteryEnergyConsumptionValue
+            );
 
             Plugin.Log.LogInfo("SeamothMK2: ");
             Plugin.Log.LogInfo("ForwardForceMultiplier: " + SeamothMK2ForwardForceMultiplier);
             Plugin.Log.LogInfo("BackwardForceMultiplier: " + SeamothMK2BackwardForceMultiplier);
             Plugin.Log.LogInfo("SidewardForceMultiplier: " + SeamothMK2SidewardForceMultiplier);
             Plugin.Log.LogInfo("VerticalForceMultiplier: " + SeamothMK2VerticalForceMultiplier);
+            Plugin.Log.LogInfo(
+                "BatteryEnergyConsumptionValue: " + SeamothMK2BatteryEnergyConsumptionValue
+            );
 
             Plugin.Log.LogInfo("PrawnSuitMK1: ");
             Plugin.Log.LogInfo("ForwardForceMultiplier: " + ExosuitMK1ForwardForceMultiplier);
             Plugin.Log.LogInfo("BackwardForceMultiplier: " + ExosuitMK1BackwardForceMultiplier);
             Plugin.Log.LogInfo("SidewardForceMultiplier: " + ExosuitMK1SidewardForceMultiplier);
             Plugin.Log.LogInfo("VerticalForceMultiplier: " + ExosuitMK1VerticalForceMultiplier);
+            Plugin.Log.LogInfo(
+                "BatteryEnergyConsumptionValue: " + ExosuitMK1BatteryEnergyConsumptionValue
+            );
 
             Plugin.Log.LogInfo("PrawnSuitMK2: ");
             Plugin.Log.LogInfo("ForwardForceMultiplier: " + ExosuitMK2ForwardForceMultiplier);
             Plugin.Log.LogInfo("BackwardForceMultiplier: " + ExosuitMK2BackwardForceMultiplier);
             Plugin.Log.LogInfo("SidewardForceMultiplier: " + ExosuitMK2SidewardForceMultiplier);
             Plugin.Log.LogInfo("VerticalForceMultiplier: " + ExosuitMK2VerticalForceMultiplier);
+            Plugin.Log.LogInfo(
+                "BatteryEnergyConsumptionValue: " + ExosuitMK2BatteryEnergyConsumptionValue
+            );
 
             Plugin.Log.LogInfo("CyclopsMK1: ");
             Plugin.Log.LogInfo(
@@ -311,6 +400,10 @@ namespace AshFox.Subnautica
                 "SlowTurningTorqueMultiplier: " + CyclopsMK1SlowTurningTorqueMultiplier
             );
             Plugin.Log.LogInfo(
+                "SlowBatteryEnergyConsumptionValue: " + CyclopsMK1SlowBatteryEnergyConsumptionValue
+            );
+
+            Plugin.Log.LogInfo(
                 "StandardForwardAccelMultiplier: " + CyclopsMK1StandardForwardAccelMultiplier
             );
             Plugin.Log.LogInfo(
@@ -320,6 +413,11 @@ namespace AshFox.Subnautica
                 "StandardTurningTorqueMultiplier: " + CyclopsMK1StandardTurningTorqueMultiplier
             );
             Plugin.Log.LogInfo(
+                "StandardBatteryEnergyConsumptionValue: "
+                    + CyclopsMK1StandardBatteryEnergyConsumptionValue
+            );
+
+            Plugin.Log.LogInfo(
                 "FastForwardAccelMultiplier: " + CyclopsMK1FastForwardAccelMultiplier
             );
             Plugin.Log.LogInfo(
@@ -327,6 +425,9 @@ namespace AshFox.Subnautica
             );
             Plugin.Log.LogInfo(
                 "FastTurningTorqueMultiplier: " + CyclopsMK1FastTurningTorqueMultiplier
+            );
+            Plugin.Log.LogInfo(
+                "FastBatteryEnergyConsumptionValue: " + CyclopsMK1FastBatteryEnergyConsumptionValue
             );
 
             Plugin.Log.LogInfo("CyclopsMK2: ");
@@ -340,6 +441,10 @@ namespace AshFox.Subnautica
                 "SlowTurningTorqueMultiplier: " + CyclopsMK2SlowTurningTorqueMultiplier
             );
             Plugin.Log.LogInfo(
+                "SlowBatteryEnergyConsumptionValue: " + CyclopsMK2SlowBatteryEnergyConsumptionValue
+            );
+
+            Plugin.Log.LogInfo(
                 "StandardForwardAccelMultiplier: " + CyclopsMK2StandardForwardAccelMultiplier
             );
             Plugin.Log.LogInfo(
@@ -349,6 +454,11 @@ namespace AshFox.Subnautica
                 "StandardTurningTorqueMultiplier: " + CyclopsMK2StandardTurningTorqueMultiplier
             );
             Plugin.Log.LogInfo(
+                "StandardBatteryEnergyConsumptionValue: "
+                    + CyclopsMK2StandardBatteryEnergyConsumptionValue
+            );
+
+            Plugin.Log.LogInfo(
                 "FastForwardAccelMultiplier: " + CyclopsMK2FastForwardAccelMultiplier
             );
             Plugin.Log.LogInfo(
@@ -357,9 +467,15 @@ namespace AshFox.Subnautica
             Plugin.Log.LogInfo(
                 "FastTurningTorqueMultiplier: " + CyclopsMK2FastTurningTorqueMultiplier
             );
+            Plugin.Log.LogInfo(
+                "FastBatteryEnergyConsumptionValue: " + CyclopsMK2FastBatteryEnergyConsumptionValue
+            );
+
+            Plugin.Log.LogInfo("HiddenOptions: ");
+            Plugin.Log.LogInfo("DuplicateEffect: " + DuplicateEffect);
         }
 
-        // 速度乗数を計算
+        // 速度乗数を計算(Seamoth,Exosuit)
         internal static (float, float, float, float) CalculateSpeedMultiplier(
             Equipment modules,
             bool isSeamoth
@@ -380,30 +496,25 @@ namespace AshFox.Subnautica
             float sideTotalMultiplier = 1.0f;
             float verticalTotalMultiplier = 1.0f;
 
-            float MK1ForwardForceMultiplier = isSeamoth
-                ? SeamothMK1ForwardForceMultiplier
-                : ExosuitMK1ForwardForceMultiplier;
-            float MK1BackwardForceMultiplier = isSeamoth
-                ? SeamothMK1BackwardForceMultiplier
-                : ExosuitMK1BackwardForceMultiplier;
-            float MK1SidewardForceMultiplier = isSeamoth
-                ? SeamothMK1SidewardForceMultiplier
-                : ExosuitMK1SidewardForceMultiplier;
-            float MK1VerticalForceMultiplier = isSeamoth
-                ? SeamothMK1VerticalForceMultiplier
-                : ExosuitMK1VerticalForceMultiplier;
-            float MK2ForwardForceMultiplier = isSeamoth
-                ? SeamothMK2ForwardForceMultiplier
-                : ExosuitMK2ForwardForceMultiplier;
-            float MK2BackwardForceMultiplier = isSeamoth
-                ? SeamothMK2BackwardForceMultiplier
-                : ExosuitMK2BackwardForceMultiplier;
-            float MK2SidewardForceMultiplier = isSeamoth
-                ? SeamothMK2SidewardForceMultiplier
-                : ExosuitMK2SidewardForceMultiplier;
-            float MK2VerticalForceMultiplier = isSeamoth
-                ? SeamothMK2VerticalForceMultiplier
-                : ExosuitMK2VerticalForceMultiplier;
+            float MK1ForwardForceMultiplier = SeamothMK1ForwardForceMultiplier;
+            float MK1BackwardForceMultiplier = SeamothMK1BackwardForceMultiplier;
+            float MK1SidewardForceMultiplier = SeamothMK1SidewardForceMultiplier;
+            float MK1VerticalForceMultiplier = SeamothMK1VerticalForceMultiplier;
+            float MK2ForwardForceMultiplier = SeamothMK2ForwardForceMultiplier;
+            float MK2BackwardForceMultiplier = SeamothMK2BackwardForceMultiplier;
+            float MK2SidewardForceMultiplier = SeamothMK2SidewardForceMultiplier;
+            float MK2VerticalForceMultiplier = SeamothMK2VerticalForceMultiplier;
+            if (!isSeamoth)
+            {
+                MK1ForwardForceMultiplier = ExosuitMK1ForwardForceMultiplier;
+                MK1BackwardForceMultiplier = ExosuitMK1BackwardForceMultiplier;
+                MK1SidewardForceMultiplier = ExosuitMK1SidewardForceMultiplier;
+                MK1VerticalForceMultiplier = ExosuitMK1VerticalForceMultiplier;
+                MK2ForwardForceMultiplier = ExosuitMK2ForwardForceMultiplier;
+                MK2BackwardForceMultiplier = ExosuitMK2BackwardForceMultiplier;
+                MK2SidewardForceMultiplier = ExosuitMK2SidewardForceMultiplier;
+                MK2VerticalForceMultiplier = ExosuitMK2VerticalForceMultiplier;
+            }
 
             if (DuplicateEffect)
             {
@@ -449,7 +560,57 @@ namespace AshFox.Subnautica
             );
         }
 
-        // 速度乗数を計算
+        // エネルギー消費率を計算(Seamoth,Exosuit)
+        internal static float CalculateEnergyConsumption(Equipment modules, bool isSeamoth)
+        {
+            if (modules == null)
+            {
+                if (Time.time - lastLogTime > 5.0f)
+                {
+                    Plugin.Log.LogWarning("Equipment modules is null");
+                    lastLogTime = Time.time;
+                }
+                return 0.0f;
+            }
+
+            float energyConsumptionTotal = 0.0f;
+            float MK1BatteryEnergyConsumptionValue = SeamothMK1BatteryEnergyConsumptionValue;
+            float MK2BatteryEnergyConsumptionValue = SeamothMK2BatteryEnergyConsumptionValue;
+
+            if (!isSeamoth)
+            {
+                MK1BatteryEnergyConsumptionValue = ExosuitMK1BatteryEnergyConsumptionValue;
+                MK2BatteryEnergyConsumptionValue = ExosuitMK2BatteryEnergyConsumptionValue;
+            }
+
+            if (DuplicateEffect)
+            {
+                int count = modules.GetCount(VehicleSpeedUpgradeModule.MK1TechType);
+                for (int i = 0; i < count; i++)
+                {
+                    energyConsumptionTotal += MK1BatteryEnergyConsumptionValue;
+                }
+                count = modules.GetCount(VehicleSpeedUpgradeModule.MK2TechType);
+                for (int i = 0; i < count; i++)
+                {
+                    energyConsumptionTotal += MK2BatteryEnergyConsumptionValue;
+                }
+            }
+            else
+            {
+                if (modules.GetCount(VehicleSpeedUpgradeModule.MK2TechType) > 0)
+                {
+                    energyConsumptionTotal += MK2BatteryEnergyConsumptionValue;
+                }
+                else if (modules.GetCount(VehicleSpeedUpgradeModule.MK1TechType) > 0)
+                {
+                    energyConsumptionTotal += MK1BatteryEnergyConsumptionValue;
+                }
+            }
+            return energyConsumptionTotal;
+        }
+
+        // 速度乗数を計算(Cyclops)
         internal static (float, float, float) CalculateCyclopsSpeedMultiplier(
             Equipment modules,
             CyclopsMotorMode.CyclopsMotorModes currentEngineLevel
@@ -468,12 +629,12 @@ namespace AshFox.Subnautica
             float forwardAccelTotalMultiplier = 1.0f;
             float verticalAccelTotalMultiplier = 1.0f;
             float turningTorqueTotalMultiplier = 1.0f;
-            float cyclopsMK1ForwardAccelMultiplier = DEFAULT_CYCLOPS_MK1_FORCE;
-            float cyclopsMK1VerticalAccelMultiplier = DEFAULT_CYCLOPS_MK1_FORCE;
-            float cyclopsMK1TurningTorqueMultiplier = DEFAULT_CYCLOPS_MK1_FORCE;
-            float cyclopsMK2ForwardAccelMultiplier = DEFAULT_CYCLOPS_MK2_FORCE;
-            float cyclopsMK2VerticalAccelMultiplier = DEFAULT_CYCLOPS_MK2_FORCE;
-            float cyclopsMK2TurningTorqueMultiplier = DEFAULT_CYCLOPS_MK2_FORCE;
+            float cyclopsMK1ForwardAccelMultiplier = DEFAULT_CYCLOPS_MK1_STANDARD_FORCE;
+            float cyclopsMK1VerticalAccelMultiplier = DEFAULT_CYCLOPS_MK1_STANDARD_FORCE;
+            float cyclopsMK1TurningTorqueMultiplier = DEFAULT_CYCLOPS_MK1_STANDARD_FORCE;
+            float cyclopsMK2ForwardAccelMultiplier = DEFAULT_CYCLOPS_MK2_STANDARD_FORCE;
+            float cyclopsMK2VerticalAccelMultiplier = DEFAULT_CYCLOPS_MK2_STANDARD_FORCE;
+            float cyclopsMK2TurningTorqueMultiplier = DEFAULT_CYCLOPS_MK2_STANDARD_FORCE;
 
             if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Slow)
             {
@@ -540,6 +701,71 @@ namespace AshFox.Subnautica
                 verticalAccelTotalMultiplier,
                 turningTorqueTotalMultiplier
             );
+        }
+
+        // エネルギー消費率乗数を計算(Cyclops)
+        internal static float CalculateCyclopsEnergyConsumption(
+            Equipment modules,
+            CyclopsMotorMode.CyclopsMotorModes currentEngineLevel
+        )
+        {
+            if (modules == null)
+            {
+                if (Time.time - lastLogTime > 5.0f)
+                {
+                    Plugin.Log.LogWarning("Equipment modules is null");
+                    lastLogTime = Time.time;
+                }
+                return 0.0f;
+            }
+
+            float energyConsumptionTotal = 0.0f;
+            float cyclopsMK1EnergyConsumptionValue =
+                DEFAULT_CYCLOPS_MK1_STANDARD_BATTERY_ENERGY_CONSUMPTION_VALUE;
+            float cyclopsMK2EnergyConsumptionValue =
+                DEFAULT_CYCLOPS_MK2_STANDARD_BATTERY_ENERGY_CONSUMPTION_VALUE;
+
+            if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Slow)
+            {
+                cyclopsMK1EnergyConsumptionValue = CyclopsMK1SlowBatteryEnergyConsumptionValue;
+                cyclopsMK2EnergyConsumptionValue = CyclopsMK2SlowBatteryEnergyConsumptionValue;
+            }
+            else if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Standard)
+            {
+                cyclopsMK1EnergyConsumptionValue = CyclopsMK1StandardBatteryEnergyConsumptionValue;
+                cyclopsMK2EnergyConsumptionValue = CyclopsMK2StandardBatteryEnergyConsumptionValue;
+            }
+            else if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Flank)
+            {
+                cyclopsMK1EnergyConsumptionValue = CyclopsMK1FastBatteryEnergyConsumptionValue;
+                cyclopsMK2EnergyConsumptionValue = CyclopsMK2FastBatteryEnergyConsumptionValue;
+            }
+
+            if (DuplicateEffect)
+            {
+                int count = modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK1TechType);
+                for (int i = 0; i < count; i++)
+                {
+                    energyConsumptionTotal += cyclopsMK1EnergyConsumptionValue;
+                }
+                count = modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK2TechType);
+                for (int i = 0; i < count; i++)
+                {
+                    energyConsumptionTotal += cyclopsMK2EnergyConsumptionValue;
+                }
+            }
+            else
+            {
+                if (modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK2TechType) > 0)
+                {
+                    energyConsumptionTotal += cyclopsMK2EnergyConsumptionValue;
+                }
+                else if (modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK1TechType) > 0)
+                {
+                    energyConsumptionTotal += cyclopsMK1EnergyConsumptionValue;
+                }
+            }
+            return energyConsumptionTotal;
         }
     }
 
@@ -848,6 +1074,53 @@ namespace AshFox.Subnautica
                 2 => "Fast",
                 _ => "Unknown",
             };
+        }
+    }
+
+    // バッテリー消費率を制御するパッチ(Seamoth, Exosuit)
+    [HarmonyPatch(typeof(EnergyMixin))]
+    internal static class VehicleEnergyConsumptionPatch
+    {
+        [HarmonyPrefix]
+        [HarmonyPatch("ConsumeEnergy", new Type[] { typeof(float) })]
+        private static void ConsumeEnergy_Prefix(EnergyMixin __instance, ref float amount)
+        {
+            if (!VehicleSpeedPatch.EnableEnergyConsumptionRate)
+            {
+                return;
+            }
+
+            // 乗り物のコンポーネントを取得
+            var vehicle = __instance.GetComponent<Vehicle>();
+            if (vehicle == null)
+            {
+                if (VehicleSpeedPatch.WriteDebugLog)
+                {
+                    Plugin.Log.LogWarning("Vehicle component not found");
+                }
+                return;
+            }
+
+            float batteryValue = 0.0f;
+            if (vehicle is SeaMoth seamoth)
+            {
+                batteryValue = VehicleSpeedPatch.CalculateEnergyConsumption(seamoth.modules, true);
+            }
+            else if (vehicle is Exosuit exosuit)
+            {
+                batteryValue = VehicleSpeedPatch.CalculateEnergyConsumption(exosuit.modules, false);
+            }
+
+            __instance.ConsumeEnergy(batteryValue);
+            if (VehicleSpeedPatch.WriteDebugLog)
+            {
+                Plugin.Log.LogInfo(
+                    $"EnergyMixin.ConsumeEnergy called for {vehicle.GetType().Name} with amount: {amount:F2}"
+                );
+                Plugin.Log.LogInfo(
+                    $"Vehicle energy consumption increased: {amount:F2} (batteryValue: {batteryValue:F1}x)"
+                );
+            }
         }
     }
 }

@@ -65,7 +65,11 @@ namespace AshFox.Subnautica
             return GetString(key, (value) => true, () => defaultValue);
         }
 
-        public String GetString(string key, Func<string, bool> checkValueFunc, string defaultValue = null)
+        public String GetString(
+            string key,
+            Func<string, bool> checkValueFunc,
+            string defaultValue = null
+        )
         {
             return GetString(key, checkValueFunc, () => defaultValue);
         }
@@ -138,7 +142,11 @@ namespace AshFox.Subnautica
             return GetFloat(key, (value) => true, () => defaultValue);
         }
 
-        public float GetFloat(string key, Func<float, bool> checkValueFunc, float defaultValue = 0.0f)
+        public float GetFloat(
+            string key,
+            Func<float, bool> checkValueFunc,
+            float defaultValue = 0.0f
+        )
         {
             return GetFloat(key, checkValueFunc, () => defaultValue);
         }
