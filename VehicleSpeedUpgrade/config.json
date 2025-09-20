@@ -1,5 +1,6 @@
 {
     "WriteDebugLog": false,
+    "EnableEnergyConsumption": true,
     "Multiplier":{
         "Seamoth": {
             "MK1": {
@@ -63,6 +64,28 @@
                     "VerticalAccel": 5.0,
                     "TurningTorque": 5.0
                 }
+            }
+        }
+    },
+    "EnergyConsumptionConstValue":{
+        "Seamoth": {
+            "MK1": 0.02,
+            "MK2": 0.03
+        },
+        "Exosuit": {
+            "MK1": 0.02,
+            "MK2": 0.03
+        },
+        "Cyclops": {
+            "MK1": {
+                "Slow": 0.05,
+                "Standard": 0.07,
+                "Fast": 0.09
+            },
+            "MK2": {
+                "Slow": 0.08,
+                "Standard": 0.09,
+                "Fast": 0.11
             }
         }
     }
