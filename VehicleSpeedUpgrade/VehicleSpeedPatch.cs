@@ -1066,6 +1066,13 @@ namespace AshFox.Subnautica
                 return;
             }
 
+            // ドックされている場合は何もしない
+            // ドックされている状態で異常な電力消費が発生していたみたいなので対応
+            if (vehicle.docked)
+            {
+                return;
+            }
+
             float batteryValue = 0.0f;
             if (vehicle is SeaMoth seamoth)
             {
