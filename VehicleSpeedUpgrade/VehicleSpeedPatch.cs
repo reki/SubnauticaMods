@@ -37,7 +37,6 @@ namespace AshFox.Subnautica
         private static readonly float DEFAULT_CYCLOPS_MK2_FAST_BATTERY_ENERGY_CONSUMPTION_VALUE =
             0.25f;
 
-        private static readonly Func<float, bool> CHECK_POSITIVE_FLOAT = (value) => value > 0.0f;
         private static readonly ConfigTemplate Config = new ConfigTemplate("config.json");
 
         public static readonly bool WriteDebugLog = Config.GetBool("WriteDebugLog", false);
@@ -51,206 +50,206 @@ namespace AshFox.Subnautica
         );
         public static readonly float VehicleUpdateDistance = Config.GetFloat(
             "VehicleUpdateDistance",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_VECHICLE_UPDATE_DISTANCE
         );
         public static readonly float CyclopsUpdateDistance = Config.GetFloat(
             "CyclopsUpdateDistance",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_UPDATE_DISTANCE
         );
 
         // SeamothMK1
         public static readonly float SeamothMK1ForwardForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK1.ForwardForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float SeamothMK1BackwardForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK1.BackwardForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float SeamothMK1SidewardForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK1.SidewardForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float SeamothMK1VerticalForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK1.VerticalForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float SeamothMK1BatteryEnergyConsumptionValue = Config.GetFloat(
             "EnergyConsumptionConstValue.Seamoth.MK1",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_OR_ZERO_FLOAT,
             DEFAULT_MK1_BATTERY_ENERGY_CONSUMPTION_VALUE
         );
 
         // SeamothMK2
         public static readonly float SeamothMK2ForwardForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK2.ForwardForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float SeamothMK2BackwardForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK2.BackwardForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float SeamothMK2SidewardForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK2.SidewardForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float SeamothMK2VerticalForceMultiplier = Config.GetFloat(
             "Multiplier.Seamoth.MK2.VerticalForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float SeamothMK2BatteryEnergyConsumptionValue = Config.GetFloat(
             "EnergyConsumptionConstValue.Seamoth.MK2",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_OR_ZERO_FLOAT,
             DEFAULT_MK2_BATTERY_ENERGY_CONSUMPTION_VALUE
         );
 
         // ExosuitMK1
         public static readonly float ExosuitMK1ForwardForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK1.ForwardForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float ExosuitMK1BackwardForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK1.BackwardForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float ExosuitMK1SidewardForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK1.SidewardForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float ExosuitMK1VerticalForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK1.VerticalForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK1_FORCE
         );
         public static readonly float ExosuitMK1BatteryEnergyConsumptionValue = Config.GetFloat(
             "EnergyConsumptionConstValue.Exosuit.MK1",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_OR_ZERO_FLOAT,
             DEFAULT_MK1_BATTERY_ENERGY_CONSUMPTION_VALUE
         );
 
         // ExosuitMK2
         public static readonly float ExosuitMK2ForwardForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK2.ForwardForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float ExosuitMK2BackwardForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK2.BackwardForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float ExosuitMK2SidewardForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK2.SidewardForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float ExosuitMK2VerticalForceMultiplier = Config.GetFloat(
             "Multiplier.Exosuit.MK2.VerticalForce",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_MK2_FORCE
         );
         public static readonly float ExosuitMK2BatteryEnergyConsumptionValue = Config.GetFloat(
             "EnergyConsumptionConstValue.Exosuit.MK2",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_OR_ZERO_FLOAT,
             DEFAULT_MK2_BATTERY_ENERGY_CONSUMPTION_VALUE
         );
 
         // CyclopsMK1(Slow)
         public static readonly float CyclopsMK1SlowForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Slow.ForwardAccel",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK1_SLOW_FORCE
         );
         public static readonly float CyclopsMK1SlowVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Slow.VerticalAccel",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK1_SLOW_FORCE
         );
         public static readonly float CyclopsMK1SlowTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Slow.TurningTorque",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK1_SLOW_FORCE
         );
         public static readonly float CyclopsMK1SlowBatteryEnergyConsumptionValue = Config.GetFloat(
             "EnergyConsumptionConstValue.Cyclops.MK1.Slow",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_OR_ZERO_FLOAT,
             DEFAULT_CYCLOPS_MK1_SLOW_BATTERY_ENERGY_CONSUMPTION_VALUE
         );
 
         // CyclopsMK1(Standard)
         public static readonly float CyclopsMK1StandardForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Standard.ForwardAccel",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK1_STANDARD_FORCE
         );
         public static readonly float CyclopsMK1StandardVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Standard.VerticalAccel",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK1_STANDARD_FORCE
         );
         public static readonly float CyclopsMK1StandardTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Standard.TurningTorque",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK1_STANDARD_FORCE
         );
         public static readonly float CyclopsMK1StandardBatteryEnergyConsumptionValue =
             Config.GetFloat(
                 "EnergyConsumptionConstValue.Cyclops.MK1.Standard",
-                CHECK_POSITIVE_FLOAT,
+                Funcs.CHECK_POSITIVE_OR_ZERO_FLOAT,
                 DEFAULT_CYCLOPS_MK1_STANDARD_BATTERY_ENERGY_CONSUMPTION_VALUE
             );
 
         // CyclopsMK1(Fast)
         public static readonly float CyclopsMK1FastForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Fast.ForwardAccel",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             () =>
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK1.Flank.ForwardAccel",
-                    CHECK_POSITIVE_FLOAT,
+                    Funcs.CHECK_POSITIVE_FLOAT,
                     DEFAULT_CYCLOPS_MK1_FAST_FORCE
                 )
         );
         public static readonly float CyclopsMK1FastVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Fast.VerticalAccel",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             () =>
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK1.Flank.VerticalAccel",
-                    CHECK_POSITIVE_FLOAT,
+                    Funcs.CHECK_POSITIVE_FLOAT,
                     DEFAULT_CYCLOPS_MK1_FAST_FORCE
                 )
         );
         public static readonly float CyclopsMK1FastTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK1.Fast.TurningTorque",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             () =>
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK1.Flank.TurningTorque",
-                    CHECK_POSITIVE_FLOAT,
+                    Funcs.CHECK_POSITIVE_FLOAT,
                     DEFAULT_CYCLOPS_MK1_FAST_FORCE
                 )
         );
         public static readonly float CyclopsMK1FastBatteryEnergyConsumptionValue = Config.GetFloat(
             "EnergyConsumptionConstValue.Cyclops.MK1.Fast",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_OR_ZERO_FLOAT,
             () =>
                 Config.GetFloat(
                     "EnergyConsumptionConstValue.Cyclops.MK1.Flank",
-                    CHECK_POSITIVE_FLOAT,
+                    Funcs.CHECK_POSITIVE_OR_ZERO_FLOAT,
                     DEFAULT_CYCLOPS_MK1_FAST_BATTERY_ENERGY_CONSUMPTION_VALUE
                 )
         );
@@ -258,86 +257,86 @@ namespace AshFox.Subnautica
         // CyclopsMK2(Slow)
         public static readonly float CyclopsMK2SlowForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Slow.ForwardAccel",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK2_SLOW_FORCE
         );
         public static readonly float CyclopsMK2SlowVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Slow.VerticalAccel",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK2_SLOW_FORCE
         );
         public static readonly float CyclopsMK2SlowTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Slow.TurningTorque",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK2_SLOW_FORCE
         );
         public static readonly float CyclopsMK2SlowBatteryEnergyConsumptionValue = Config.GetFloat(
             "EnergyConsumptionConstValue.Cyclops.MK2.Slow",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_OR_ZERO_FLOAT,
             DEFAULT_CYCLOPS_MK2_SLOW_BATTERY_ENERGY_CONSUMPTION_VALUE
         );
 
         // CyclopsMK2(Standard)
         public static readonly float CyclopsMK2StandardForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Standard.ForwardAccel",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK2_STANDARD_FORCE
         );
         public static readonly float CyclopsMK2StandardVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Standard.VerticalAccel",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK2_STANDARD_FORCE
         );
         public static readonly float CyclopsMK2StandardTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Standard.TurningTorque",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             DEFAULT_CYCLOPS_MK2_STANDARD_FORCE
         );
         public static readonly float CyclopsMK2StandardBatteryEnergyConsumptionValue =
             Config.GetFloat(
                 "EnergyConsumptionConstValue.Cyclops.MK2.Standard",
-                CHECK_POSITIVE_FLOAT,
+                Funcs.CHECK_POSITIVE_OR_ZERO_FLOAT,
                 DEFAULT_CYCLOPS_MK2_STANDARD_BATTERY_ENERGY_CONSUMPTION_VALUE
             );
 
         // CyclopsMK2(Fast)
         public static readonly float CyclopsMK2FastForwardAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Fast.ForwardAccel",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             () =>
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK2.Flank.ForwardAccel",
-                    CHECK_POSITIVE_FLOAT,
+                    Funcs.CHECK_POSITIVE_FLOAT,
                     DEFAULT_CYCLOPS_MK2_FAST_FORCE
                 )
         );
         public static readonly float CyclopsMK2FastVerticalAccelMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Fast.VerticalAccel",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             () =>
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK2.Flank.VerticalAccel",
-                    CHECK_POSITIVE_FLOAT,
+                    Funcs.CHECK_POSITIVE_FLOAT,
                     DEFAULT_CYCLOPS_MK2_FAST_FORCE
                 )
         );
         public static readonly float CyclopsMK2FastTurningTorqueMultiplier = Config.GetFloat(
             "Multiplier.Cyclops.MK2.Fast.TurningTorque",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_FLOAT,
             () =>
                 Config.GetFloat(
                     "Multiplier.Cyclops.MK2.Flank.TurningTorque",
-                    CHECK_POSITIVE_FLOAT,
+                    Funcs.CHECK_POSITIVE_FLOAT,
                     DEFAULT_CYCLOPS_MK2_FAST_FORCE
                 )
         );
         public static readonly float CyclopsMK2FastBatteryEnergyConsumptionValue = Config.GetFloat(
             "EnergyConsumptionConstValue.Cyclops.MK2.Fast",
-            CHECK_POSITIVE_FLOAT,
+            Funcs.CHECK_POSITIVE_OR_ZERO_FLOAT,
             () =>
                 Config.GetFloat(
                     "EnergyConsumptionConstValue.Cyclops.MK2.Flank",
-                    CHECK_POSITIVE_FLOAT,
+                    Funcs.CHECK_POSITIVE_OR_ZERO_FLOAT,
                     DEFAULT_CYCLOPS_MK2_FAST_BATTERY_ENERGY_CONSUMPTION_VALUE
                 )
         );

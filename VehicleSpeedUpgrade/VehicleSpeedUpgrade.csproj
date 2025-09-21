@@ -73,5 +73,8 @@
     <Compile Include="..\Commons\ConfigTemplate.cs">
       <Link>Commons\ConfigTemplate.cs</Link>
     </Compile>
+    <Compile Include="..\Commons\Funcs.cs">
+      <Link>Commons\Funcs.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>
