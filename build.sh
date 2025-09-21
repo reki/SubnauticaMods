@@ -1,9 +1,9 @@
 #!/bin/bash
 cd $(dirname $0)
 
-rm -rf ./Releases
-mkdir -p ./Releases
+./clean.sh
 
+cd ..
 cd ./SeamothDepthUpgrade
 ./build.sh
 
