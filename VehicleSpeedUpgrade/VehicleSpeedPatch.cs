@@ -39,8 +39,12 @@ namespace AshFox.Subnautica
 
         private static readonly Func<float, bool> CHECK_POSITIVE_FLOAT = (value) => value > 0.0f;
         private static readonly ConfigTemplate Config = new ConfigTemplate("config.json");
-        private static readonly bool DuplicateEffect = Config.GetBool("DuplicateEffect", false);
+
         public static readonly bool WriteDebugLog = Config.GetBool("WriteDebugLog", false);
+        public static readonly bool DamageDefenceEnhanced = Config.GetBool(
+            "DamageDefenceEnhanced",
+            true
+        );
         public static readonly bool EnableEnergyConsumption = Config.GetBool(
             "EnableEnergyConsumption",
             true
@@ -349,6 +353,7 @@ namespace AshFox.Subnautica
             Plugin.Log.LogInfo("VehicleUpdateDistance: " + VehicleUpdateDistance);
             Plugin.Log.LogInfo("CyclopsUpdateDistance: " + CyclopsUpdateDistance);
             Plugin.Log.LogInfo("EnableEnergyConsumption: " + EnableEnergyConsumption);
+            Plugin.Log.LogInfo("DamageDefenceEnhanced: " + DamageDefenceEnhanced);
 
             Plugin.Log.LogInfo("SeamothMK1: ");
             Plugin.Log.LogInfo("ForwardForceMultiplier: " + SeamothMK1ForwardForceMultiplier);
@@ -467,9 +472,6 @@ namespace AshFox.Subnautica
             Plugin.Log.LogInfo(
                 "FastBatteryEnergyConsumptionValue: " + CyclopsMK2FastBatteryEnergyConsumptionValue
             );
-
-            Plugin.Log.LogInfo("HiddenOptions: ");
-            Plugin.Log.LogInfo("DuplicateEffect: " + DuplicateEffect);
         }
 
         // 速度乗数を計算(Seamoth,Exosuit)
@@ -488,73 +490,49 @@ namespace AshFox.Subnautica
                 return (1.0f, 1.0f, 1.0f, 1.0f);
             }
 
-            float frontTotalMultiplier = 1.0f;
-            float backTotalMultiplier = 1.0f;
-            float sideTotalMultiplier = 1.0f;
-            float verticalTotalMultiplier = 1.0f;
-
-            float MK1ForwardForceMultiplier = SeamothMK1ForwardForceMultiplier;
-            float MK1BackwardForceMultiplier = SeamothMK1BackwardForceMultiplier;
-            float MK1SidewardForceMultiplier = SeamothMK1SidewardForceMultiplier;
-            float MK1VerticalForceMultiplier = SeamothMK1VerticalForceMultiplier;
-            float MK2ForwardForceMultiplier = SeamothMK2ForwardForceMultiplier;
-            float MK2BackwardForceMultiplier = SeamothMK2BackwardForceMultiplier;
-            float MK2SidewardForceMultiplier = SeamothMK2SidewardForceMultiplier;
-            float MK2VerticalForceMultiplier = SeamothMK2VerticalForceMultiplier;
-            if (!isSeamoth)
+            if (isSeamoth)
             {
-                MK1ForwardForceMultiplier = ExosuitMK1ForwardForceMultiplier;
-                MK1BackwardForceMultiplier = ExosuitMK1BackwardForceMultiplier;
-                MK1SidewardForceMultiplier = ExosuitMK1SidewardForceMultiplier;
-                MK1VerticalForceMultiplier = ExosuitMK1VerticalForceMultiplier;
-                MK2ForwardForceMultiplier = ExosuitMK2ForwardForceMultiplier;
-                MK2BackwardForceMultiplier = ExosuitMK2BackwardForceMultiplier;
-                MK2SidewardForceMultiplier = ExosuitMK2SidewardForceMultiplier;
-                MK2VerticalForceMultiplier = ExosuitMK2VerticalForceMultiplier;
-            }
-
-            if (DuplicateEffect)
-            {
-                int count = modules.GetCount(VehicleSpeedUpgradeModule.MK1TechType);
-                for (int i = 0; i < count; i++)
+                if (modules.GetCount(VehicleSpeedUpgradeModule.MK2TechType) > 0)
                 {
-                    frontTotalMultiplier *= MK1ForwardForceMultiplier;
-                    backTotalMultiplier *= MK1BackwardForceMultiplier;
-                    sideTotalMultiplier *= MK1SidewardForceMultiplier;
-                    verticalTotalMultiplier *= MK1VerticalForceMultiplier;
+                    return (
+                        SeamothMK2ForwardForceMultiplier,
+                        SeamothMK2BackwardForceMultiplier,
+                        SeamothMK2SidewardForceMultiplier,
+                        SeamothMK2VerticalForceMultiplier
+                    );
                 }
-                count = modules.GetCount(VehicleSpeedUpgradeModule.MK2TechType);
-                for (int i = 0; i < count; i++)
+                else if (modules.GetCount(VehicleSpeedUpgradeModule.MK1TechType) > 0)
                 {
-                    frontTotalMultiplier *= MK2ForwardForceMultiplier;
-                    backTotalMultiplier *= MK2BackwardForceMultiplier;
-                    sideTotalMultiplier *= MK2SidewardForceMultiplier;
-                    verticalTotalMultiplier *= MK2VerticalForceMultiplier;
+                    return (
+                        SeamothMK1ForwardForceMultiplier,
+                        SeamothMK1BackwardForceMultiplier,
+                        SeamothMK1SidewardForceMultiplier,
+                        SeamothMK1VerticalForceMultiplier
+                    );
                 }
             }
             else
             {
                 if (modules.GetCount(VehicleSpeedUpgradeModule.MK2TechType) > 0)
                 {
-                    frontTotalMultiplier *= MK2ForwardForceMultiplier;
-                    backTotalMultiplier *= MK2BackwardForceMultiplier;
-                    sideTotalMultiplier *= MK2SidewardForceMultiplier;
-                    verticalTotalMultiplier *= MK2VerticalForceMultiplier;
+                    return (
+                        ExosuitMK2ForwardForceMultiplier,
+                        ExosuitMK2BackwardForceMultiplier,
+                        ExosuitMK2SidewardForceMultiplier,
+                        ExosuitMK2VerticalForceMultiplier
+                    );
                 }
                 else if (modules.GetCount(VehicleSpeedUpgradeModule.MK1TechType) > 0)
                 {
-                    frontTotalMultiplier *= MK1ForwardForceMultiplier;
-                    backTotalMultiplier *= MK1BackwardForceMultiplier;
-                    sideTotalMultiplier *= MK1SidewardForceMultiplier;
-                    verticalTotalMultiplier *= MK1VerticalForceMultiplier;
+                    return (
+                        ExosuitMK1ForwardForceMultiplier,
+                        ExosuitMK1BackwardForceMultiplier,
+                        ExosuitMK1SidewardForceMultiplier,
+                        ExosuitMK1VerticalForceMultiplier
+                    );
                 }
             }
-            return (
-                frontTotalMultiplier,
-                backTotalMultiplier,
-                sideTotalMultiplier,
-                verticalTotalMultiplier
-            );
+            return (1.0f, 1.0f, 1.0f, 1.0f);
         }
 
         // エネルギー消費率を計算(Seamoth,Exosuit)
@@ -570,41 +548,29 @@ namespace AshFox.Subnautica
                 return 0.0f;
             }
 
-            float energyConsumptionTotal = 0.0f;
-            float MK1BatteryEnergyConsumptionValue = SeamothMK1BatteryEnergyConsumptionValue;
-            float MK2BatteryEnergyConsumptionValue = SeamothMK2BatteryEnergyConsumptionValue;
-
-            if (!isSeamoth)
+            if (isSeamoth)
             {
-                MK1BatteryEnergyConsumptionValue = ExosuitMK1BatteryEnergyConsumptionValue;
-                MK2BatteryEnergyConsumptionValue = ExosuitMK2BatteryEnergyConsumptionValue;
-            }
-
-            if (DuplicateEffect)
-            {
-                int count = modules.GetCount(VehicleSpeedUpgradeModule.MK1TechType);
-                for (int i = 0; i < count; i++)
+                if (modules.GetCount(VehicleSpeedUpgradeModule.MK2TechType) > 0)
                 {
-                    energyConsumptionTotal += MK1BatteryEnergyConsumptionValue;
+                    return SeamothMK2BatteryEnergyConsumptionValue;
                 }
-                count = modules.GetCount(VehicleSpeedUpgradeModule.MK2TechType);
-                for (int i = 0; i < count; i++)
+                else if (modules.GetCount(VehicleSpeedUpgradeModule.MK1TechType) > 0)
                 {
-                    energyConsumptionTotal += MK2BatteryEnergyConsumptionValue;
+                    return SeamothMK1BatteryEnergyConsumptionValue;
                 }
             }
             else
             {
                 if (modules.GetCount(VehicleSpeedUpgradeModule.MK2TechType) > 0)
                 {
-                    energyConsumptionTotal += MK2BatteryEnergyConsumptionValue;
+                    return ExosuitMK2BatteryEnergyConsumptionValue;
                 }
                 else if (modules.GetCount(VehicleSpeedUpgradeModule.MK1TechType) > 0)
                 {
-                    energyConsumptionTotal += MK1BatteryEnergyConsumptionValue;
+                    return ExosuitMK1BatteryEnergyConsumptionValue;
                 }
             }
-            return energyConsumptionTotal;
+            return 0.0f;
         }
 
         // 速度乗数を計算(Cyclops)
@@ -622,82 +588,61 @@ namespace AshFox.Subnautica
                 }
                 return (1.0f, 1.0f, 1.0f);
             }
-
-            float forwardAccelTotalMultiplier = 1.0f;
-            float verticalAccelTotalMultiplier = 1.0f;
-            float turningTorqueTotalMultiplier = 1.0f;
-            float cyclopsMK1ForwardAccelMultiplier = DEFAULT_CYCLOPS_MK1_STANDARD_FORCE;
-            float cyclopsMK1VerticalAccelMultiplier = DEFAULT_CYCLOPS_MK1_STANDARD_FORCE;
-            float cyclopsMK1TurningTorqueMultiplier = DEFAULT_CYCLOPS_MK1_STANDARD_FORCE;
-            float cyclopsMK2ForwardAccelMultiplier = DEFAULT_CYCLOPS_MK2_STANDARD_FORCE;
-            float cyclopsMK2VerticalAccelMultiplier = DEFAULT_CYCLOPS_MK2_STANDARD_FORCE;
-            float cyclopsMK2TurningTorqueMultiplier = DEFAULT_CYCLOPS_MK2_STANDARD_FORCE;
-
-            if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Slow)
+            if (modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK2TechType) > 0)
             {
-                cyclopsMK1ForwardAccelMultiplier = CyclopsMK1SlowForwardAccelMultiplier;
-                cyclopsMK1VerticalAccelMultiplier = CyclopsMK1SlowVerticalAccelMultiplier;
-                cyclopsMK1TurningTorqueMultiplier = CyclopsMK1SlowTurningTorqueMultiplier;
-                cyclopsMK2ForwardAccelMultiplier = CyclopsMK2SlowForwardAccelMultiplier;
-                cyclopsMK2VerticalAccelMultiplier = CyclopsMK2SlowVerticalAccelMultiplier;
-                cyclopsMK2TurningTorqueMultiplier = CyclopsMK2SlowTurningTorqueMultiplier;
-            }
-            else if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Standard)
-            {
-                cyclopsMK1ForwardAccelMultiplier = CyclopsMK1StandardForwardAccelMultiplier;
-                cyclopsMK1VerticalAccelMultiplier = CyclopsMK1StandardVerticalAccelMultiplier;
-                cyclopsMK1TurningTorqueMultiplier = CyclopsMK1StandardTurningTorqueMultiplier;
-                cyclopsMK2ForwardAccelMultiplier = CyclopsMK2StandardForwardAccelMultiplier;
-                cyclopsMK2VerticalAccelMultiplier = CyclopsMK2StandardVerticalAccelMultiplier;
-                cyclopsMK2TurningTorqueMultiplier = CyclopsMK2StandardTurningTorqueMultiplier;
-            }
-            else if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Flank)
-            {
-                cyclopsMK1ForwardAccelMultiplier = CyclopsMK1FastForwardAccelMultiplier;
-                cyclopsMK1VerticalAccelMultiplier = CyclopsMK1FastVerticalAccelMultiplier;
-                cyclopsMK1TurningTorqueMultiplier = CyclopsMK1FastTurningTorqueMultiplier;
-                cyclopsMK2ForwardAccelMultiplier = CyclopsMK2FastForwardAccelMultiplier;
-                cyclopsMK2VerticalAccelMultiplier = CyclopsMK2FastVerticalAccelMultiplier;
-                cyclopsMK2TurningTorqueMultiplier = CyclopsMK2FastTurningTorqueMultiplier;
-            }
-
-            if (DuplicateEffect)
-            {
-                int count = modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK1TechType);
-                for (int i = 0; i < count; i++)
+                if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Slow)
                 {
-                    forwardAccelTotalMultiplier *= cyclopsMK1ForwardAccelMultiplier;
-                    verticalAccelTotalMultiplier *= cyclopsMK1VerticalAccelMultiplier;
-                    turningTorqueTotalMultiplier *= cyclopsMK1TurningTorqueMultiplier;
+                    return (
+                        CyclopsMK1SlowForwardAccelMultiplier,
+                        CyclopsMK1SlowVerticalAccelMultiplier,
+                        CyclopsMK1SlowTurningTorqueMultiplier
+                    );
                 }
-                count = modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK2TechType);
-                for (int i = 0; i < count; i++)
+                else if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Standard)
                 {
-                    forwardAccelTotalMultiplier *= cyclopsMK2ForwardAccelMultiplier;
-                    verticalAccelTotalMultiplier *= cyclopsMK2VerticalAccelMultiplier;
-                    turningTorqueTotalMultiplier *= cyclopsMK2TurningTorqueMultiplier;
+                    return (
+                        CyclopsMK1StandardForwardAccelMultiplier,
+                        CyclopsMK1StandardVerticalAccelMultiplier,
+                        CyclopsMK1StandardTurningTorqueMultiplier
+                    );
+                }
+                else if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Flank)
+                {
+                    return (
+                        CyclopsMK1FastForwardAccelMultiplier,
+                        CyclopsMK1FastVerticalAccelMultiplier,
+                        CyclopsMK1FastTurningTorqueMultiplier
+                    );
                 }
             }
-            else
+            else if (modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK1TechType) > 0)
             {
-                if (modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK2TechType) > 0)
+                if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Slow)
                 {
-                    forwardAccelTotalMultiplier *= cyclopsMK2ForwardAccelMultiplier;
-                    verticalAccelTotalMultiplier *= cyclopsMK2VerticalAccelMultiplier;
-                    turningTorqueTotalMultiplier *= cyclopsMK2TurningTorqueMultiplier;
+                    return (
+                        CyclopsMK1SlowForwardAccelMultiplier,
+                        CyclopsMK1SlowVerticalAccelMultiplier,
+                        CyclopsMK1SlowTurningTorqueMultiplier
+                    );
                 }
-                else if (modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK1TechType) > 0)
+                else if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Standard)
                 {
-                    forwardAccelTotalMultiplier *= cyclopsMK1ForwardAccelMultiplier;
-                    verticalAccelTotalMultiplier *= cyclopsMK1VerticalAccelMultiplier;
-                    turningTorqueTotalMultiplier *= cyclopsMK1TurningTorqueMultiplier;
+                    return (
+                        CyclopsMK1StandardForwardAccelMultiplier,
+                        CyclopsMK1StandardVerticalAccelMultiplier,
+                        CyclopsMK1StandardTurningTorqueMultiplier
+                    );
+                }
+                else if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Flank)
+                {
+                    return (
+                        CyclopsMK1FastForwardAccelMultiplier,
+                        CyclopsMK1FastVerticalAccelMultiplier,
+                        CyclopsMK1FastTurningTorqueMultiplier
+                    );
                 }
             }
-            return (
-                forwardAccelTotalMultiplier,
-                verticalAccelTotalMultiplier,
-                turningTorqueTotalMultiplier
-            );
+            return (1.0f, 1.0f, 1.0f);
         }
 
         // エネルギー消費率乗数を計算(Cyclops)
@@ -716,53 +661,15 @@ namespace AshFox.Subnautica
                 return 0.0f;
             }
 
-            float energyConsumptionTotal = 0.0f;
-            float cyclopsMK1EnergyConsumptionValue =
-                DEFAULT_CYCLOPS_MK1_STANDARD_BATTERY_ENERGY_CONSUMPTION_VALUE;
-            float cyclopsMK2EnergyConsumptionValue =
-                DEFAULT_CYCLOPS_MK2_STANDARD_BATTERY_ENERGY_CONSUMPTION_VALUE;
-
-            if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Slow)
+            if (modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK2TechType) > 0)
             {
-                cyclopsMK1EnergyConsumptionValue = CyclopsMK1SlowBatteryEnergyConsumptionValue;
-                cyclopsMK2EnergyConsumptionValue = CyclopsMK2SlowBatteryEnergyConsumptionValue;
+                return CyclopsMK2SlowBatteryEnergyConsumptionValue;
             }
-            else if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Standard)
+            else if (modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK1TechType) > 0)
             {
-                cyclopsMK1EnergyConsumptionValue = CyclopsMK1StandardBatteryEnergyConsumptionValue;
-                cyclopsMK2EnergyConsumptionValue = CyclopsMK2StandardBatteryEnergyConsumptionValue;
+                return CyclopsMK1SlowBatteryEnergyConsumptionValue;
             }
-            else if (currentEngineLevel == CyclopsMotorMode.CyclopsMotorModes.Flank)
-            {
-                cyclopsMK1EnergyConsumptionValue = CyclopsMK1FastBatteryEnergyConsumptionValue;
-                cyclopsMK2EnergyConsumptionValue = CyclopsMK2FastBatteryEnergyConsumptionValue;
-            }
-
-            if (DuplicateEffect)
-            {
-                int count = modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK1TechType);
-                for (int i = 0; i < count; i++)
-                {
-                    energyConsumptionTotal += cyclopsMK1EnergyConsumptionValue;
-                }
-                count = modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK2TechType);
-                for (int i = 0; i < count; i++)
-                {
-                    energyConsumptionTotal += cyclopsMK2EnergyConsumptionValue;
-                }
-            }
-            else
-            {
-                if (modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK2TechType) > 0)
-                {
-                    energyConsumptionTotal += cyclopsMK2EnergyConsumptionValue;
-                }
-                else if (modules.GetCount(VehicleSpeedUpgradeModule.CyclopsMK1TechType) > 0)
-                {
-                    energyConsumptionTotal += cyclopsMK1EnergyConsumptionValue;
-                }
-            }
-            return energyConsumptionTotal;
+            return 0.0f;
         }
     }
 
