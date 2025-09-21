@@ -1,15 +1,16 @@
-## Subnautica Mods (SeamothDepthUpgrade / TeleportVehicle / UraninitePowerCell)
+## Subnautica Mods Collection
 
 [日本語はこちら](./README.ja.md)
 
 ### Overview
 This repository contains a collection of BepInEx mods for Subnautica:
-- SeamothDepthUpgrade: Adds extended depth upgrade modules for the Seamoth.
-- TeleportVehicle: Allows teleporting to or recalling vehicles.
-- UraninitePowerCell: Adds a high-capacity power cell crafted from Uraninite.
+- **SeamothDepthUpgrade**: Adds MK4 and MK5 depth upgrade modules for the Seamoth, allowing exploration at depths up to 1700m.
+- **TeleportVehicle**: Provides a vehicle teleporter tool that allows you to select and teleport vehicles to your location using left/right click controls.
+- **UraninitePowerCell**: Adds high-capacity power cells and batteries crafted from Uraninite Crystal, providing 50x more capacity than standard cells.
+- **VehicleSpeedUpgrade**: Adds universal speed upgrade modules (MK1 & MK2) for Seamoth, Exosuit, and Cyclops with configurable multipliers and battery consumption.
 
-The shared library `Commons` provides cross-mod utilities such as localization.
-The source code for this project also includes AI-generated code.
+The shared library `Commons` provides cross-mod utilities including localization management and custom icon loading.
+The source code for this project includes AI-generated code.
 
 ### Requirements
 - Subnautica (PC, latest stable)
@@ -49,6 +50,7 @@ Build individually:
 cd SeamothDepthUpgrade && ./build.sh
 cd TeleportVehicle && ./build.sh
 cd UraninitePowerCell && ./build.sh
+cd VehicleSpeedUpgrade && ./build.sh
 ```
 Artifacts: `bin/Release/net472/` under each project. Copy the DLL and `Localization` to `BepInEx/plugins/<ModName>`.
 

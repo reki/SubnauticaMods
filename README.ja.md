@@ -1,14 +1,15 @@
-## Subnautica Mods（SeamothDepthUpgrade / TeleportVehicle / UraninitePowerCell）
+## Subnautica Mods コレクション
 
 [English is here](./README.md)
 
 ### 概要
 このリポジトリは Subnautica 向けの BepInEx Mod 集です：
-- SeamothDepthUpgrade：シーモスの深度アップグレードを拡張します。
-- TeleportVehicle：ビークルへのテレポート／呼び戻しを可能にします。
-- UraninitePowerCell：閃ウラン鉱由来の大容量パワーセルを追加します。
+- **SeamothDepthUpgrade**：シーモス用の MK4・MK5 深度アップグレードモジュールを追加し、最大1700mまでの探索を可能にします。
+- **TeleportVehicle**：左右クリック操作でビークルを選択・テレポートできるビークルテレポーターツールを提供します。
+- **UraninitePowerCell**：閃ウラン鉱から作成される大容量パワーセル・バッテリーを追加し、標準品の50倍の容量を提供します。
+- **VehicleSpeedUpgrade**：シーモス・プラウンスーツ・サイクロプス用の汎用速度アップグレードモジュール（MK1・MK2）を追加し、設定可能な倍率とバッテリー消費機能を提供します。
 
-共通ライブラリ `Commons` はローカライズなどの共通機能を提供します。
+共通ライブラリ `Commons` はローカライゼーション管理やカスタムアイコン読み込みなどの共通機能を提供します。
 このプロジェクトのソースコードはAIで生成されたコードも含まれています。
 
 ### 必要環境
@@ -49,6 +50,7 @@ dotnet restore
 cd SeamothDepthUpgrade && ./build.sh
 cd TeleportVehicle && ./build.sh
 cd UraninitePowerCell && ./build.sh
+cd VehicleSpeedUpgrade && ./build.sh
 ```
 成果物：各プロジェクトの `bin/Release/net472/`。DLL と `Localization` を `BepInEx/plugins/<ModName>` に配置します。
 

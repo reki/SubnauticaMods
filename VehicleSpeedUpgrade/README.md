@@ -1,63 +1,82 @@
-# Vehicle Movement Speed Increase Module
+## VehicleSpeedUpgrade
 
-A Subnautica mod that adds universal vehicle speed upgrade modules.
+[日本語はこちら](./README.ja.md)
 
-## Features
+### Overview
+A comprehensive vehicle speed enhancement mod that adds universal speed upgrade modules for all Subnautica vehicles with configurable multipliers and battery consumption.
 
-This mod adds three speed upgrade modules:
+### Features
 
-- **Vehicle Speed Upgrade MK1**: Increases movement speed by 1.5x
-- **Vehicle Speed Upgrade MK2**: Increases movement speed by 2.0x  
-- **Vehicle Speed Upgrade MK3**: Increases movement speed by 2.5x
+This mod adds four speed upgrade modules:
 
-## Key Features
+- **Vehicle Speed Upgrade MK1**: For Seamoth and Exosuit (configurable multiplier, default 2.0x)
+- **Vehicle Speed Upgrade MK2**: For Seamoth and Exosuit (configurable multiplier, default 2.5x)
+- **Cyclops Speed Upgrade MK1**: For Cyclops submarine (configurable per engine mode)
+- **Cyclops Speed Upgrade MK2**: For Cyclops submarine (higher performance)
 
-- **Stackable**: Multiple modules of the same type can be equipped for compounded effects
-- **Universal Support**: Compatible with both SeaMoth and Exosuit vehicles
-- **Safety Limits**: Maximum speed limits implemented to prevent excessive acceleration
+### Key Features
 
-## Recipes
+- **Universal Support**: Compatible with Seamoth, Exosuit (Prawn Suit), and Cyclops
+- **Configurable Multipliers**: All speed values can be adjusted via JSON configuration
+- **Battery Consumption**: Optional energy consumption system for balanced gameplay
+- **Engine Mode Aware**: Cyclops modules adjust based on engine speed (Slow/Standard/Fast)
+- **Damage Defense**: Optional enhanced damage resistance when speed modules are active
 
-### MK1
+### Recipes
+
+**Vehicle Speed Upgrade MK1:**
 - Titanium x2
-- Copper x1
 - Quartz x1
 
-### MK2  
-- Titanium x3
-- Copper x2
+**Vehicle Speed Upgrade MK2:**
+- Vehicle Speed Upgrade MK1 x1
+- Titanium x2
 - Quartz x2
-- Lithium x1
-
-### MK3
-- Titanium x4
-- Copper x3
-- Quartz x3
-- Lithium x2
 - Nickel x1
+- Diamond x1
 
-## Installation
+**Cyclops Speed Upgrade MK1:**
+- Titanium x3
+- Quartz x2
+- Copper x2
 
-1. Ensure BepInEx and Nautilus are installed
-2. Place `VehicleSpeedUpgrade.dll` in your `BepInEx/plugins/` folder
-3. Place the `Localization` folder in the same location
-4. Launch the game and craft the modules from the Fabricator's "Upgrades" tab
+**Cyclops Speed Upgrade MK2:**
+- Cyclops Speed Upgrade MK1 x1
+- Titanium x3
+- Quartz x3
+- Nickel x2
+- Diamond x1
 
-## Usage Notes
+### Crafting Locations
+- **MK1**: Vehicle Upgrade Console (SeamothUpgrades > CommonModules)
+- **MK2**: Modification Station (Workbench)
+- **Cyclops MK1**: Cyclops Fabricator (Modules)
+- **Cyclops MK2**: Modification Station (Workbench)
 
+### Configuration
+The mod includes a `config.json` file with extensive customization options:
+- **Speed Multipliers**: Adjust force multipliers for all vehicles and directions
+- **Energy Consumption**: Configure battery drain rates for each module
+- **Debug Options**: Enable detailed logging for troubleshooting
+- **Damage Defense**: Toggle enhanced damage resistance
+
+### Usage Notes
 - Install modules in your vehicle's upgrade slots
-- Multiple modules stack multiplicatively (e.g., MK1 x2 = 1.5 x 1.5 = 2.25x speed)
-- Be cautious of collision and control issues at high speeds
+- Only one speed module per vehicle (higher tier overrides lower)
+- Cyclops modules adjust performance based on current engine mode
+- Energy consumption scales with movement (configurable)
+- All settings can be modified in the config file
 
-## Requirements
-
-- BepInEx
+### Requirements
+- BepInEx 5.x for Subnautica
 - Nautilus
+- Subnautica (PC)
 
-## Version
+### Install
+Copy `VehicleSpeedUpgrade.dll` and the `Localization` folder into `Subnautica/BepInEx/plugins/VehicleSpeedUpgrade/`.
 
-1.0.0 - Initial release
-
-## License
-
-This mod is open source. Feel free to modify and redistribute.
+### Build
+```bash
+./build.sh
+```
+Output: `bin/Release/net472/VehicleSpeedUpgrade.dll`.
