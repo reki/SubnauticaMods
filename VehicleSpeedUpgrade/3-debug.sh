@@ -1,11 +1,11 @@
 #!/bin/bash
 echo "VehicleSpeedUpgrade Build started:" $(date)
-rm -rf bin/ obj/ VehicleSpeedUpgrade/Release/
-dotnet build -c Release
+rm -rf bin/ obj/ VehicleSpeedUpgrade/Debug/
+dotnet build -c Debug -p:Configuration=March2023
 if [ $? -eq 0 ]; then
     rm -rf VehicleSpeedUpgrade
     mkdir -p VehicleSpeedUpgrade
-    cp bin/Release/net472/VehicleSpeedUpgrade.dll VehicleSpeedUpgrade
+    cp bin/Debug/net472/VehicleSpeedUpgrade.dll VehicleSpeedUpgrade
     cp -r Localization VehicleSpeedUpgrade
     cp -r Assets VehicleSpeedUpgrade
     cp config.json VehicleSpeedUpgrade

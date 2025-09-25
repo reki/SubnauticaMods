@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "UraninitePowerCell Build started" $(date)
-rm -rf bin/ obj/ UraninitePowerCell/
+rm -rf bin/ obj/ UraninitePowerCell/Release/
 dotnet build -c Release
 if [ $? -eq 0 ]; then
     rm -rf UraninitePowerCell

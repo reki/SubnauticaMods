@@ -1,11 +1,11 @@
 #!/bin/bash
 echo "SeamothDepthUpgrade Build started:" $(date)
-rm -rf bin/ obj/ SeamothDepthUpgrade/Release/
-dotnet build -c Release -p:Configuration=March2023
+rm -rf bin/ obj/ SeamothDepthUpgrade/Debug/
+dotnet build -c Debug -p:Configuration=March2023
 if [ $? -eq 0 ]; then
     rm -rf SeamothDepthUpgrade
     mkdir -p SeamothDepthUpgrade
-    cp bin/Release/net472/SeamothDepthUpgrade.dll SeamothDepthUpgrade
+    cp bin/Debug/net472/SeamothDepthUpgrade.dll SeamothDepthUpgrade
     cp -r Localization SeamothDepthUpgrade
     if [ -d $SUBNAUTICA_HOME/BepInEx/plugins ]; then
         rm -rf $SUBNAUTICA_HOME/BepInEx/plugins/SeamothDepthUpgrade

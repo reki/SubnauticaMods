@@ -1,11 +1,11 @@
 #!/bin/bash
 echo "UraninitePowerCell Build started" $(date)
-rm -rf bin/ obj/ UraninitePowerCell/Release/
-dotnet build -c Release -p:Configuration=March2023
+rm -rf bin/ obj/ UraninitePowerCell/Debug/
+dotnet build -c Debug
 if [ $? -eq 0 ]; then
     rm -rf UraninitePowerCell
     mkdir -p UraninitePowerCell
-    cp bin/Release/net472/UraninitePowerCell.dll UraninitePowerCell
+    cp bin/Debug/net472/UraninitePowerCell.dll UraninitePowerCell
     cp -r Localization UraninitePowerCell
     cp -r Assets UraninitePowerCell
     rm UraninitePowerCell/Assets/uraninite_battery_diffuse.png

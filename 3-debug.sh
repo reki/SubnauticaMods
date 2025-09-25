@@ -1,42 +1,42 @@
 #!/bin/bash
 cd $(dirname $0)
 
-rm -rf ./Releases
+rm -rf ./MarchDebugs
 
 cd ./SeamothDepthUpgrade
-./build.sh
+./3-debug.sh
 
 if [ $? -eq 0 ]; then
-    mkdir -p ./../Releases
-    cp -r ./SeamothDepthUpgrade ./../Releases
+    mkdir -p ./../MarchDebugs
+    cp -r ./SeamothDepthUpgrade ./../MarchDebugs
 fi
 
 echo -e "\n================================================\n"
 
 cd ..
 cd ./TeleportVehicle
-./build.sh
+./3-debug.sh
 if [ $? -eq 0 ]; then
-    mkdir -p ./../Releases
-    cp -r ./TeleportVehicle ./../Releases
+    mkdir -p ./../MarchDebugs
+    cp -r ./TeleportVehicle ./../MarchDebugs
 fi
 
 echo -e "\n================================================\n"
 
 cd ..
 cd ./UraninitePowerCell
-./build.sh
+./3-debug.sh
 if [ $? -eq 0 ]; then
-    mkdir -p ./../Releases
-    cp -r ./UraninitePowerCell ./../Releases
+    mkdir -p ./../MarchDebugs
+    cp -r ./UraninitePowerCell ./../MarchDebugs
 fi
 
 echo -e "\n================================================\n"
 
 cd ..
 cd ./VehicleSpeedUpgrade
-./build.sh
+./3-debug.sh
 if [ $? -eq 0 ]; then
-    mkdir -p ./../Releases
-    cp -r ./VehicleSpeedUpgrade ./../Releases
+    mkdir -p ./../MarchDebugs
+    cp -r ./VehicleSpeedUpgrade ./../MarchDebugs
 fi

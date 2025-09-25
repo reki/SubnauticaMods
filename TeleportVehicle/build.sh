@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "TeleportVehicle Build started:" $(date)
-rm -rf bin/ obj/ TeleportVehicle/
+rm -rf bin/ obj/ TeleportVehicle/Release/
 dotnet build -c Release
 if [ $? -eq 0 ]; then
     rm -rf TeleportVehicle
