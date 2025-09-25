@@ -1,43 +1,42 @@
 #!/bin/bash
 cd $(dirname $0)
 
-rm -rf ./Releases
+rm -rf ./Debugs
 
-cd ..
 cd ./SeamothDepthUpgrade
-./build.sh
+./debug.sh
 
 if [ $? -eq 0 ]; then
-    mkdir -p ./../Releases
-    cp -r ./SeamothDepthUpgrade ./../Releases
+    mkdir -p ./../Debugs
+    cp -r ./SeamothDepthUpgrade ./../Debugs
 fi
 
 echo -e "\n================================================\n"
 
 cd ..
 cd ./TeleportVehicle
-./build.sh
+./debug.sh
 if [ $? -eq 0 ]; then
-    mkdir -p ./../Releases
-    cp -r ./TeleportVehicle ./../Releases
+    mkdir -p ./../Debugs
+    cp -r ./TeleportVehicle ./../Debugs
 fi
 
 echo -e "\n================================================\n"
 
 cd ..
 cd ./UraninitePowerCell
-./build.sh
+./debug.sh
 if [ $? -eq 0 ]; then
-    mkdir -p ./../Releases
-    cp -r ./UraninitePowerCell ./../Releases
+    mkdir -p ./../Debugs
+    cp -r ./UraninitePowerCell ./../Debugs
 fi
 
 echo -e "\n================================================\n"
 
 cd ..
 cd ./VehicleSpeedUpgrade
-./build.sh
+./debug.sh
 if [ $? -eq 0 ]; then
-    mkdir -p ./../Releases
-    cp -r ./VehicleSpeedUpgrade ./../Releases
+    mkdir -p ./../Debugs
+    cp -r ./VehicleSpeedUpgrade ./../Debugs
 fi

@@ -1,11 +1,11 @@
 #!/bin/bash
 echo "TeleportVehicle Build started:" $(date)
-rm -rf bin/ obj/ TeleportVehicle/Release/
-dotnet build -c Release
+rm -rf bin/ obj/ TeleportVehicle/Debug
+dotnet build -c Debug
 if [ $? -eq 0 ]; then
     rm -rf TeleportVehicle
     mkdir -p TeleportVehicle
-    cp bin/Release/net472/TeleportVehicle.dll TeleportVehicle
+    cp bin/Debug/net472/TeleportVehicle.dll TeleportVehicle
     cp -r Localization TeleportVehicle/
     if [ -d $SUBNAUTICA_HOME/BepInEx/plugins ]; then
         rm -rf $SUBNAUTICA_HOME/BepInEx/plugins/TeleportVehicle

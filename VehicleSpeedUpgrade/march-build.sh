@@ -15,7 +15,7 @@ for arg in "$@"; do
 done
 
 rm -rf bin/ obj/ VehicleSpeedUpgrade/Release/
-dotnet build -c Release
+dotnet build -c Release -p:Configuration=March2023
 if [ $? -eq 0 ]; then
     rm -rf VehicleSpeedUpgrade
     mkdir -p VehicleSpeedUpgrade

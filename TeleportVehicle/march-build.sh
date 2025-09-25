@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "TeleportVehicle Build started:" $(date)
 rm -rf bin/ obj/ TeleportVehicle/Release/
-dotnet build -c Release
+dotnet build -c Release -p:Configuration=March2023
 if [ $? -eq 0 ]; then
     rm -rf TeleportVehicle
     mkdir -p TeleportVehicle

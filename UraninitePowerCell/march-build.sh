@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "UraninitePowerCell Build started" $(date)
 rm -rf bin/ obj/ UraninitePowerCell/Release/
-dotnet build -c Release
+dotnet build -c Release -p:Configuration=March2023
 if [ $? -eq 0 ]; then
     rm -rf UraninitePowerCell
     mkdir -p UraninitePowerCell
