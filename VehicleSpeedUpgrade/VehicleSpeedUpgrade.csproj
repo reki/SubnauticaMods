@@ -11,7 +11,8 @@
       https://nuget.bepinex.dev/v3/index.json;
     </RestoreAdditionalProjectSources>
   </PropertyGroup>
-  <ItemGroup>
+  <!-- Latest (pre.44) -->
+  <ItemGroup Condition="'$(TargetBranch)'!='March2023'">
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.4.21" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="1.1.0" />
@@ -19,7 +20,19 @@
     <PackageReference Include="Unity.InputSystem" Version="1.4.1" IncludeAssets="compile" />
     <PackageReference Include="Subnautica.GameLibs" Version="82304.0.0-r.0" />
     <PackageReference Include="PolySharp" Version="1.15.0" />
-    <PackageReference Include="Subnautica.Nautilus" Version="1.*-*" PrivateAssets="all" />
+    <PackageReference Include="Subnautica.Nautilus" Version="1.0.0-pre.44" PrivateAssets="all" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <!-- March 2023 (pre.41) -->
+  <ItemGroup Condition="'$(TargetBranch)'=='March2023'">
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="1.1.0" />
+    <PackageReference Include="UnityEngine.Modules" Version="2019.4.36" IncludeAssets="compile" />
+    <PackageReference Include="Unity.InputSystem" Version="1.4.1" IncludeAssets="compile" />
+    <PackageReference Include="Subnautica.GameLibs" Version="71288.0.0-r.0" />
+    <PackageReference Include="PolySharp" Version="1.15.0" />
+    <PackageReference Include="Subnautica.Nautilus" Version="1.0.0-pre.41" PrivateAssets="all" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
