@@ -11,6 +11,13 @@
       https://nuget.bepinex.dev/v3/index.json;
     </RestoreAdditionalProjectSources>
   </PropertyGroup>
+  <!-- Define constants based on target branch -->
+  <PropertyGroup Condition="'$(TargetBranch)'!='March2023'">
+    <DefineConstants>PRE_44</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetBranch)'=='March2023'">
+    <DefineConstants>PRE_41</DefineConstants>
+  </PropertyGroup>
   <!-- Latest (pre.44) -->
   <ItemGroup Condition="'$(TargetBranch)'!='March2023'">
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />

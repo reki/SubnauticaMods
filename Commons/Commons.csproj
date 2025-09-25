@@ -6,6 +6,13 @@
     <LangVersion>11</LangVersion>
     <RootNamespace>AshFox.Subnautica</RootNamespace>
   </PropertyGroup>
+  <!-- Define constants based on target branch -->
+  <PropertyGroup Condition="'$(TargetBranch)'!='March2023'">
+    <DefineConstants>PRE_44</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetBranch)'=='March2023'">
+    <DefineConstants>PRE_41</DefineConstants>
+  </PropertyGroup>
   <!-- Latest (pre.44) -->
   <ItemGroup Condition="'$(TargetBranch)'!='March2023'">
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
