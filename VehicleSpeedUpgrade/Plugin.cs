@@ -22,7 +22,7 @@ namespace AshFox.Subnautica
     {
         public const string PluginGuid = "jp.ashfox.vehicle.module";
         public const string PluginName = "VehicleSpeedUpgrade";
-        public const string PluginVersion = "1.0.0";
+        public const string PluginVersion = "1.1.0";
 
         public static ManualLogSource Log { get; private set; }
 
