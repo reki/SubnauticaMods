@@ -3,7 +3,6 @@ cd $(dirname $0)
 
 rm -rf ./Releases
 
-cd ..
 cd ./SeamothDepthUpgrade
 ./build.sh
 

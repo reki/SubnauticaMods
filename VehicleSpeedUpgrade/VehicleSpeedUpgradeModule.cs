@@ -95,7 +95,7 @@ namespace AshFox.Subnautica
                 classId: "VehicleSpeedUpgradeMK2",
                 displayName: LocalizationManager.GetLocalizedString("VehicleSpeedUpgrade.MK2.Name"),
                 description: LocalizationManager.GetLocalizedString(
-                    "VehicleSpeedUpgradeMK2.Description"
+                    "VehicleSpeedUpgrade.MK2.Description"
                 )
             );
 
