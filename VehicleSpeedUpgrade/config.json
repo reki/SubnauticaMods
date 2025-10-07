@@ -1,7 +1,6 @@
 {
     "WriteDebugLog": false,
     "EnableEnergyConsumption": true,
-    "DamageDefenceEnhanced": true,
     "Multiplier":{
         "Seamoth": {
             "MK1": {

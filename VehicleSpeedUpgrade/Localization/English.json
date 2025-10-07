@@ -2,11 +2,11 @@
   "VehicleSpeedUpgrade": {
     "MK1": {
       "Name": "Vehicle Speed Upgrade MK1",
-      "Description": "Increases SeaMoth and PRAWN SUIT movement speed."
+      "Description": "Increases SeaMoth and Prawn Suit movement speed."
     },
     "MK2": {
       "Name": "Vehicle Speed Upgrade MK2",
-      "Description": "Increases SeaMoth and PRAWN SUIT movement speed more than MK1."
+      "Description": "Increases SeaMoth and Prawn Suit movement speed more than MK1."
     }
   },
   "CyclopsSpeedUpgrade": {
